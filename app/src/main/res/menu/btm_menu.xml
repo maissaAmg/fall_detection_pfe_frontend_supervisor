@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Contacts"
+        android:icon="@drawable/personnes"
+        android:id="@+id/contactsFragment"/>
+
+    <item android:title="Scan"
+        android:icon="@drawable/qrscan"
+        android:id="@+id/QRScannerFragment"/>
+
+    <item android:title="Profil"
+        android:icon="@drawable/profil"
+        android:id="@+id/profilFragment"/>
+</menu>
