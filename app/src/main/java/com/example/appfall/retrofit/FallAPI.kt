@@ -1,9 +1,11 @@
 package com.example.appfall.retrofit
 
 import com.example.appfall.data.models.ConnectedSupervisorsResponse
+import com.example.appfall.data.models.DailyFallsResponse
 import com.example.appfall.data.models.FallFilter
 import com.example.appfall.data.models.FallResponse
 import com.example.appfall.data.models.LoginResponse
+import com.example.appfall.data.models.MonthYear
 import com.example.appfall.data.models.User
 import com.example.appfall.data.models.UserCredential
 import retrofit2.Call
@@ -32,6 +34,12 @@ interface FallAPI {
     fun getFallsByUser(@Header("Authorization") token: String,
                        @Path("userId") userId: String, @Body request: FallFilter
     ): Call<FallResponse>
+
+    @POST("falls/getDailyFalls/{userId}")
+    fun getDailyFalls(@Header("Authorization") token: String,
+                       @Path("userId") userId: String, @Body request: MonthYear
+    ): Call<DailyFallsResponse>
+
 
 
 }

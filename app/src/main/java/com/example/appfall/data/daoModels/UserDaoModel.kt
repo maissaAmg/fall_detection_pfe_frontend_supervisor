@@ -5,8 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class UserDaoModel(
+    val name: String,
     @PrimaryKey
     val phone: String,
-    val token: String,
-    val name: String
+    val token: String
+
 )

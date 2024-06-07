@@ -27,6 +27,7 @@ class AuthenticationActivity : AppCompatActivity() {
             insets
         }
 
+        //startActivity(Intent(this@AuthenticationActivity, MainActivity::class.java))
         userDao = AppDatabase.getInstance(this).userDao()
 
         lifecycleScope.launch(Dispatchers.Main) {

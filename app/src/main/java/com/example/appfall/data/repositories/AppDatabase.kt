@@ -26,19 +26,24 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "Fall_db"
-                ).build()
+                ).addMigrations(MIGRATION_1_2)
+                    .build()
                 INSTANCE = instance
                 instance
             }
         }
 
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
+        private val MIGRATION_1_2 = object : Migration(3, 1) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Create a new table for contacts
+                database.execSQL("DROP TABLE IF EXISTS users")
+                database.execSQL("DROP TABLE IF EXISTS contacts")
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS contacts (" +
-                            "name TEXT NOT NULL, " +
-                            "phone TEXT NOT NULL," + "_id TEXT PRIMARY KEY NOT NULL" +
+                    "CREATE TABLE IF NOT EXISTS users (" +
+                            "name TEXT NOT NULL DEFAULT 'undefined', " +
+                            "phone TEXT NOT NULL DEFAULT 'undefined', " +
+                            "token TEXT NOT NULL DEFAULT 'undefined', " +
+                            "PRIMARY KEY(phone)" +
                             ")"
                 )
             }
