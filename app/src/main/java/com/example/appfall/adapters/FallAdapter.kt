@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -21,8 +22,7 @@ import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
-import java.text.SimpleDateFormat
-import java.util.Locale
+
 
 
 class FallAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<FallAdapter.FallViewHolder>() {
@@ -77,6 +77,15 @@ class FallAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Ada
             binding.expandIcon.setImageResource(
                 if (isExpanded) R.drawable.ic_expand_less else R.drawable.ic_expand_more
             )
+
+            // Set card background color based on fall status
+            val colorRes = when (fall.status) {
+                "active" -> R.color.light_red
+                "rescued" -> R.color.green
+                "false" -> R.color.light_grey
+                else -> R.color.white // Define a default color in your colors.xml
+            }
+            binding.cardView.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, colorRes))
 
             // Initialize Mapbox MapView with fall's location
             val mapView = binding.mapView

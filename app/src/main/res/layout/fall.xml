@@ -13,6 +13,7 @@
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -43,8 +44,8 @@
                 android:fontFamily="@font/myfont"
                 android:paddingTop="6dp"
                 android:paddingLeft="14dp"
-                android:textColor="@color/grey"
                 android:textSize="14sp"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/fallIdText"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/expandIcon"
@@ -81,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:text="Heure:"
                         android:fontFamily="@font/myfont"
-                        android:textColor="@color/grey"
+                        android:textColor="@color/black"
                         android:textSize="14sp"
                         android:layout_marginEnd="8dp" />
 
@@ -104,6 +105,7 @@
                         android:layout_height="wrap_content"
                         android:text="Lieu:"
                         android:fontFamily="@font/myfont"
+                        android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
