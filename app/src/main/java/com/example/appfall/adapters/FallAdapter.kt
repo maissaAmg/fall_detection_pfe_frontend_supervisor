@@ -21,6 +21,8 @@ import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class FallAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<FallAdapter.FallViewHolder>() {
@@ -62,6 +64,13 @@ class FallAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Ada
 
         fun bind(fall: Fall, position: Int) {
             binding.fall = fall // This binds the 'fall' variable to the layout
+
+            val formattedDate = extractDate(fall.dateTime)
+            val formattedTime = extractTime(fall.dateTime)
+
+            binding.fallDate.text = formattedDate
+            binding.fallTime.text = formattedTime
+
             binding.position = position
             binding.executePendingBindings()
             binding.expandedLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
@@ -112,6 +121,14 @@ class FallAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Ada
                         .build()
                 )
             }
+        }
+
+        private fun extractDate(dateTime: String): String {
+            return dateTime.substringBefore('T')
+        }
+
+        private fun extractTime(dateTime: String): String {
+            return dateTime.substringAfter('T').substringBefore('Z')
         }
     }
 }

@@ -7,5 +7,5 @@ data class Fall(
     val createdAt: String,
     val place: Place,
     val status: String,
-    val updatedAt: String
+    val dateTime: String
 )

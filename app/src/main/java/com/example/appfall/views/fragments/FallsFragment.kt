@@ -82,7 +82,7 @@ class FallsFragment : Fragment() {
         }
 
         binding.btnFalse.setOnClickListener {
-            fallViewModel.getFalls(userId,"rescued")
+            fallViewModel.getFalls(userId,"false")
             setButtonState(binding.btnFalse) { observeFalls() }
         }
 
