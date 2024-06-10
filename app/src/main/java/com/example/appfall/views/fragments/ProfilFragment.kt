@@ -156,9 +156,9 @@ class ProfilFragment : Fragment() {
         }
 
 
-        val colorRescued = resources.getColor(R.color.hot_jazz, null)
-        val colorActive = resources.getColor(R.color.deadly_depth, null)
-        val colorFalse = resources.getColor(R.color.yellow, null)
+        val colorRescued = resources.getColor(R.color.custom_red, null)
+        val colorActive = resources.getColor(R.color.deep_blue, null)
+        val colorFalse = resources.getColor(R.color.light_yellow, null)
 
         val barDataSetRescued = BarDataSet(rescuedEntries, "Rescued")
         barDataSetRescued.color = colorRescued

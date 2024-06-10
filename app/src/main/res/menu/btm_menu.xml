@@ -9,7 +9,7 @@
         android:icon="@drawable/qrscan"
         android:id="@+id/QRScannerFragment"/>
 
-    <item android:title="Profil"
-        android:icon="@drawable/profil"
+    <item android:title="Stats"
+        android:icon="@drawable/ic_stats"
         android:id="@+id/profilFragment"/>
 </menu>

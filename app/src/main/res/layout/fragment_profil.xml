@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:paddingBottom="10dp"
-                android:text="Profil"
+                android:text="Statistiques"
                 android:textColor="#BF3131"
                 android:textSize="28sp"
                 android:textStyle="bold" />

@@ -41,8 +41,8 @@ class ContactsAdapter ( private val onContactClick: (String) -> Unit) : Recycler
                     .into(contactImage)*/
                 contactName.text = contact.name
                 val cardColor = when {
-                    contact.isPaused -> R.color.yellow
-                    contact.inDanger -> R.color.hot_jazz
+                    contact.isPaused -> R.color.light_yellow
+                    contact.inDanger -> R.color.light_red
                     else -> R.color.white
                 }
 
