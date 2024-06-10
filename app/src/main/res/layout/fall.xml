@@ -33,6 +33,21 @@
                 android:fontFamily="@font/myfont"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/fallDate"
+                app:layout_constraintHorizontal_bias="0" />
+
+            <TextView
+                android:id="@+id/fallDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`Date: ` + fall.createdAt}"
+                android:fontFamily="@font/myfont"
+                android:paddingTop="6dp"
+                android:paddingLeft="12dp"
+                android:textColor="@color/grey"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/fallIdText"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/expandIcon"
                 app:layout_constraintHorizontal_bias="0" />
 
@@ -41,6 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="7dp"
                 android:src="@drawable/ic_expand_more"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -55,15 +71,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/fallIdText"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
-                    android:id="@+id/fallDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{`Date: ` + fall.createdAt}"
-                    android:fontFamily="@font/myfont"
-                    tools:text="Date: 2023-05-29" />
-
-                <!-- ConstraintLayout to place "Lieu" TextView and MapView side by side -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
