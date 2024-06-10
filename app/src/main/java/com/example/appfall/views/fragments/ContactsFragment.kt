@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.appfall.R
 import com.example.appfall.adapters.ContactsAdapter
 import com.example.appfall.databinding.FragmentContactsBinding
 
@@ -46,6 +47,11 @@ class ContactsFragment : Fragment() {
         }
         contactsViewModel.getContacts()
         observeContacts()
+
+        // Ajoutez le gestionnaire de clic pour l'icône de paramètres
+        binding.icSettings.setOnClickListener {
+            findNavController().navigate(R.id.action_contactsFragment_to_parameterFragment)
+        }
     }
 
     private fun observeContacts() {

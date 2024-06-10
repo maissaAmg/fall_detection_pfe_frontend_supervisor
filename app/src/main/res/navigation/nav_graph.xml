@@ -16,6 +16,9 @@
         <argument
             android:name="userId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_contactsFragment_to_parameterFragment"
+            app:destination="@id/parameterFragment" />
     </fragment>
     <fragment
         android:id="@+id/codeFragment"
@@ -31,12 +34,20 @@
         android:id="@+id/QRScannerFragment"
         android:name="com.example.appfall.views.fragments.QRScannerFragment"
         android:label="fragment_qr_scanner"
-        tools:layout="@layout/fragment_qr_scanner" />
+        tools:layout="@layout/fragment_qr_scanner" >
+        <action
+            android:id="@+id/action_QRScannerFragment_to_parameterFragment"
+            app:destination="@id/parameterFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profilFragment"
         android:name="com.example.appfall.views.fragments.ProfilFragment"
         android:label="fragment_profil"
-        tools:layout="@layout/fragment_profil" />
+        tools:layout="@layout/fragment_profil" >
+        <action
+            android:id="@+id/action_profilFragment_to_parameterFragment"
+            app:destination="@id/parameterFragment" />
+    </fragment>
     <fragment
         android:id="@+id/fallsFragment"
         android:name="com.example.appfall.views.fragments.FallsFragment"
@@ -49,4 +60,9 @@
             android:id="@+id/action_fallsFragment_to_contactsFragment"
             app:destination="@id/contactsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/parameterFragment"
+        android:name="com.example.appfall.views.fragments.ParameterFragment"
+        android:label="fragment_parameter"
+        tools:layout="@layout/fragment_parameter" />
 </navigation>

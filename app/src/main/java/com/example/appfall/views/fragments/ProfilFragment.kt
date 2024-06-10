@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.appfall.R
 import com.example.appfall.data.models.Day
 import com.example.appfall.viewModels.FallsViewModel
@@ -38,6 +40,11 @@ class ProfilFragment : Fragment() {
         barChart = view.findViewById(R.id.barChart)
         monthSpinner = view.findViewById(R.id.monthSpinner)
         yearSpinner = view.findViewById(R.id.yearSpinner)
+
+        val settingsIcon: ImageView = view.findViewById(R.id.ic_settings)
+        settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_profilFragment_to_parameterFragment)
+        }
 
         // Initialize month spinner with month names or numbers
         val months = resources.getStringArray(R.array.months)

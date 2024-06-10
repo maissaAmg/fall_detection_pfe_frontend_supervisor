@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.CodeScannerView
@@ -41,6 +42,12 @@ class QRScannerFragment: Fragment() {
         successIcon = view.findViewById(R.id.successIcon)
         failureIcon = view.findViewById(R.id.failureIcon)
         statusText = view.findViewById(R.id.statusText)
+
+        val settingsIcon: ImageView = view.findViewById(R.id.ic_settings)
+        settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_QRScannerFragment_to_parameterFragment)
+        }
+
         return view
     }
 
