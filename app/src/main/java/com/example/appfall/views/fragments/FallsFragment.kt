@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
 import com.example.appfall.adapters.FallAdapter
@@ -26,6 +28,13 @@ class FallsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fallViewModel = ViewModelProvider(this)[FallsViewModel::class.java]
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_fallsFragment_to_contactsFragment)
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
     }
 
