@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Switch
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -28,7 +26,7 @@ class FallsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fallViewModel = ViewModelProvider(this)[FallsViewModel::class.java]
-        fallAdapter = FallAdapter()
+
     }
 
     override fun onCreateView(
@@ -42,7 +40,7 @@ class FallsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        fallAdapter = FallAdapter(viewLifecycleOwner)
 
         binding.fallsList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -143,5 +141,7 @@ class FallsFragment : Fragment() {
             binding.switchStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
         }
     }
+
+
 }
 
