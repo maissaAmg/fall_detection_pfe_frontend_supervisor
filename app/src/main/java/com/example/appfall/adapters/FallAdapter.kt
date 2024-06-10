@@ -29,7 +29,7 @@ class FallAdapter : RecyclerView.Adapter<FallAdapter.FallViewHolder>() {
 
     override fun onBindViewHolder(holder: FallViewHolder, position: Int) {
         val fall = fallsList[position]
-        holder.bind(fall)
+        holder.bind(fall, position + 1)  // Pass position + 1 for sequential numbering
     }
 
     inner class FallViewHolder(private val binding: FallBinding) :
@@ -47,8 +47,9 @@ class FallAdapter : RecyclerView.Adapter<FallAdapter.FallViewHolder>() {
             }
         }
 
-        fun bind(fall: Fall) {
+        fun bind(fall: Fall, position: Int) {
             binding.fall = fall // This binds the 'fall' variable to the layout
+            binding.position = position
             binding.executePendingBindings()
             binding.expandedLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
             binding.expandIcon.setImageResource(

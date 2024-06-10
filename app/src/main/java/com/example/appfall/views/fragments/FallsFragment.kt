@@ -8,6 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Switch
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
@@ -52,6 +56,8 @@ class FallsFragment : Fragment() {
         Log.d("FallsFragmentUserId","$id")
         Log.d("FallsFragmentUserId","*********************************")
 
+        // Ajouter cet appel pour charger toutes les chutes par défaut
+        fallViewModel.getFalls(userId, "all")
 
         binding.btnAll.setOnClickListener {
             fallViewModel.getFalls(userId,"all")
@@ -75,6 +81,18 @@ class FallsFragment : Fragment() {
 
 
         observeFalls()
+
+        binding.btnDelete.setOnClickListener {
+            showDeleteConfirmationDialog()
+        }
+
+        // Initial state for Switch and TextView
+        updateStatusText(binding.switchPauseTracking.isChecked)
+
+        // Switch listener
+        binding.switchPauseTracking.setOnCheckedChangeListener { _, isChecked ->
+            updateStatusText(isChecked)
+        }
     }
 
     private fun setButtonState(clickedButton: Button, observerFunction: () -> Unit) {
@@ -98,6 +116,31 @@ class FallsFragment : Fragment() {
             falls?.let {
                 fallAdapter.setFalls(ArrayList(it))
             }
+        }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Alerte !")
+        builder.setMessage("En supprimant cette personne, vous ne recevrez plus d'alertes de son appareil.")
+        builder.setPositiveButton("Confirmer") { dialog, which ->
+            // Action à réaliser lors de la confirmation
+        }
+        builder.setNegativeButton("Annuler") { dialog, which ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun updateStatusText(isChecked: Boolean) {
+        if (isChecked) {
+            binding.switchStatus.text = "Activé"
+            binding.switchStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.custom_red))
+        } else {
+            binding.switchStatus.text = "Désactivé"
+            binding.switchStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
         }
     }
 }

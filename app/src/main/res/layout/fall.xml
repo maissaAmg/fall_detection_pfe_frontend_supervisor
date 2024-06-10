@@ -7,6 +7,9 @@
         <variable
             name="fall"
             type="com.example.appfall.data.models.Fall" />
+        <variable
+            name="position"
+            type="int" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -25,8 +28,9 @@
                 android:id="@+id/fallIdText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{`Fall: ` + fall._id}"
+                android:text="@{`Chute ` + position}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:fontFamily="@font/myfont"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/expandIcon"
@@ -56,6 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{`Date: ` + fall.createdAt}"
+                    android:fontFamily="@font/myfont"
                     tools:text="Date: 2023-05-29" />
 
                 <TextView

@@ -10,4 +10,5 @@
     <color name="custom_red">#BF3131</color>
     <color name="yellow">#FFFF00</color>
     <color name="red">#FF0000</color>
+    <color name="grey">#808080</color>
 </resources>
