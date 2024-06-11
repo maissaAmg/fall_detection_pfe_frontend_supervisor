@@ -1,5 +1,6 @@
 package com.example.appfall.views.fragments
 
+import android.content.Intent
 import com.example.appfall.viewModels.ContactsViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
 import com.example.appfall.adapters.ContactsAdapter
 import com.example.appfall.databinding.FragmentContactsBinding
+import com.example.appfall.views.activities.ParametersActivity
 
 
 class ContactsFragment : Fragment() {
@@ -50,7 +52,8 @@ class ContactsFragment : Fragment() {
 
         // Ajoutez le gestionnaire de clic pour l'icône de paramètres
         binding.icSettings.setOnClickListener {
-            findNavController().navigate(R.id.action_contactsFragment_to_parameterFragment)
+            val intent = Intent(requireContext(), ParametersActivity::class.java)
+            startActivity(intent)
         }
     }
 

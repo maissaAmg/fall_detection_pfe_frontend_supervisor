@@ -1,5 +1,6 @@
 package com.example.appfall.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -21,6 +22,7 @@ import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.example.appfall.R
 import com.example.appfall.viewModels.UserViewModel
+import com.example.appfall.views.activities.ParametersActivity
 import com.example.appfall.websockets.WebSocketManager
 
 class QRScannerFragment: Fragment() {
@@ -45,7 +47,8 @@ class QRScannerFragment: Fragment() {
 
         val settingsIcon: ImageView = view.findViewById(R.id.ic_settings)
         settingsIcon.setOnClickListener {
-            findNavController().navigate(R.id.action_QRScannerFragment_to_parameterFragment)
+            val intent = Intent(requireContext(), ParametersActivity::class.java)
+            startActivity(intent)
         }
 
         return view

@@ -1,5 +1,6 @@
 package com.example.appfall.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.appfall.R
 import com.example.appfall.data.models.Day
 import com.example.appfall.viewModels.FallsViewModel
+import com.example.appfall.views.activities.ParametersActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -43,7 +45,8 @@ class ProfilFragment : Fragment() {
 
         val settingsIcon: ImageView = view.findViewById(R.id.ic_settings)
         settingsIcon.setOnClickListener {
-            findNavController().navigate(R.id.action_profilFragment_to_parameterFragment)
+            val intent = Intent(requireContext(), ParametersActivity::class.java)
+            startActivity(intent)
         }
 
         // Initialize month spinner with month names or numbers

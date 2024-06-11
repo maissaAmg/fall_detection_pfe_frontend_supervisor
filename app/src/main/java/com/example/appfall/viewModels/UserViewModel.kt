@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.appfall.data.daoModels.UserDaoModel
 import com.example.appfall.data.models.LoginResponse
+import com.example.appfall.data.models.UpdateSupervisorNameRequest
+import com.example.appfall.data.models.UpdateSupervisorPasswordRequest
+import com.example.appfall.data.models.UpdateSupervisorResponse
 import com.example.appfall.data.models.User
 import com.example.appfall.data.models.UserCredential
 import com.example.appfall.data.repositories.AppDatabase
@@ -22,6 +25,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
+    private var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NTczMTY0ODViOTFiZjY3ZGZjNjM5ZiIsImlhdCI6MTcxNjk5MDMwOH0.4HxGAUghy9zX-LzXG7ukzY3ugx9Pld_kDGz342E0_Uc"
+
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
 
     private val _loginResponse: MutableLiveData<LoginResponse> = MutableLiveData()
@@ -35,6 +40,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _localUser: MutableLiveData<UserDaoModel?> = MutableLiveData()
     val localUser: MutableLiveData<UserDaoModel?> = _localUser
+
+    private val _updateNameResponse: MutableLiveData<UpdateSupervisorResponse> = MutableLiveData()
+    val updateNameResponse: LiveData<UpdateSupervisorResponse> = _updateNameResponse
+
+    private val _updatePasswordResponse: MutableLiveData<UpdateSupervisorResponse> = MutableLiveData()
+    val updatePasswordResponse: LiveData<UpdateSupervisorResponse> = _updatePasswordResponse
 
 
     fun addUser(user: User) {
@@ -117,6 +128,48 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             userDao.deleteUser()
         }
+    }
+
+    fun updateName(name: String) {
+        val request = UpdateSupervisorNameRequest(name)
+        RetrofitInstance.fallApi.updateSupervisorName("Bearer $token", request).enqueue(object : Callback<UpdateSupervisorResponse> {
+            override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
+                if (response.isSuccessful) {
+                    _updateNameResponse.value = response.body()
+                    Log.d("UserViewModel", "${response.body()}")
+                } else {
+                    handleErrorResponse(response.errorBody())
+                    Log.e("UserViewModel", "Failed to update name: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<UpdateSupervisorResponse>, t: Throwable) {
+                val errorMessage = t.message ?: "Une erreur s'est produite lors de la mise à jour du nom"
+                _addErrorStatus.postValue(errorMessage)
+                Log.e("ParameterViewModel", "Failed to update name", t)
+            }
+        })
+    }
+
+    fun updatePassword(password: String) {
+        val request = UpdateSupervisorPasswordRequest(password)
+        RetrofitInstance.fallApi.updateSupervisorPassword("Bearer $token", request).enqueue(object : Callback<UpdateSupervisorResponse> {
+            override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
+                if (response.isSuccessful) {
+                    _updatePasswordResponse.value = response.body()
+                    Log.d("UserViewModel", "${response.body()}")
+                } else {
+                    handleErrorResponse(response.errorBody())
+                    Log.e("UserViewModel", "Failed to update password: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<UpdateSupervisorResponse>, t: Throwable) {
+                val errorMessage = t.message ?: "Une erreur s'est produite lors de la mise à jour du mot de passe"
+                _addErrorStatus.postValue(errorMessage)
+                Log.e("UserViewModel", "Failed to update password", t)
+            }
+        })
     }
 
     private fun handleErrorResponse(errorBody: ResponseBody?) {
