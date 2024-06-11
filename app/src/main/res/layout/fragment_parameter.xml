@@ -137,6 +137,7 @@
 
         <!-- Quatrième ligne : Icone de déconnexion et "Logout" -->
         <LinearLayout
+            android:id="@+id/layoutDeconnexion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

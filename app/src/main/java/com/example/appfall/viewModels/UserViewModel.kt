@@ -113,6 +113,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun logout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userDao.deleteUser()
+        }
+    }
+
     private fun handleErrorResponse(errorBody: ResponseBody?) {
         val errorMessage = errorBody?.string()?.let { errorContent ->
             try {

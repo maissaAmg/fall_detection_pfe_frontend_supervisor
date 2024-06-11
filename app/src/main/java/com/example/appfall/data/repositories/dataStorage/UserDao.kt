@@ -23,4 +23,7 @@ interface UserDao {
     //update a user
     @Update
     fun updateUser(user: UserDaoModel)
+
+    @Query("DELETE FROM users")
+    fun deleteUser()
 }
