@@ -1,6 +1,8 @@
 package com.example.appfall.views.fragments
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -11,9 +13,10 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.CodeScannerView
@@ -25,7 +28,7 @@ import com.example.appfall.viewModels.UserViewModel
 import com.example.appfall.views.activities.ParametersActivity
 import com.example.appfall.websockets.WebSocketManager
 
-class QRScannerFragment: Fragment() {
+class QRScannerFragment : Fragment() {
     private lateinit var codeScanner: CodeScanner
     private lateinit var loadingAnimation: ProgressBar
     private lateinit var successIcon: ImageView
@@ -36,8 +39,19 @@ class QRScannerFragment: Fragment() {
     private var name: String? = null
     private val viewModel: UserViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                setupScanner()
+            } else {
+                handlePermissionDenied()
+            }
+        }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val view = inflater.inflate(R.layout.fragment_qr_scanner, container, false)
         // Initialiser les vues pour l'animation de chargement et les icônes
         loadingAnimation = view.findViewById(R.id.loadingAnimation)
@@ -72,7 +86,29 @@ class QRScannerFragment: Fragment() {
 
         WebSocketManager.connectWebSocket()
 
-        val scannerView = view.findViewById<CodeScannerView>(R.id.scanner_view)
+        checkCameraPermission()
+    }
+
+    private fun checkCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+                // Permission already granted
+                setupScanner()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                // Show an explanation to the user why we need the permission
+                //Toast.makeText(requireContext(), "Camera permission is needed to scan QR codes", Toast.LENGTH_LONG).show()
+                requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+            else -> {
+                // Request the permission
+                requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun setupScanner() {
+        val scannerView = view?.findViewById<CodeScannerView>(R.id.scanner_view) ?: return
         val activity = requireActivity()
         codeScanner = CodeScanner(activity, scannerView)
         codeScanner.camera = CodeScanner.CAMERA_BACK
@@ -141,13 +177,24 @@ class QRScannerFragment: Fragment() {
         }
     }
 
+    private fun handlePermissionDenied() {
+        // Handle the case when the camera permission is denied
+        val scannerView = view?.findViewById<CodeScannerView>(R.id.scanner_view)
+        scannerView?.visibility = View.INVISIBLE
+        Toast.makeText(requireContext(), "La permission de la caméra a été refusée. Le scan des codes QR est désactivée.", Toast.LENGTH_LONG).show()
+    }
+
     override fun onResume() {
         super.onResume()
-        codeScanner.startPreview()
+        if (::codeScanner.isInitialized) {
+            codeScanner.startPreview()
+        }
     }
 
     override fun onPause() {
-        codeScanner.releaseResources()
+        if (::codeScanner.isInitialized) {
+            codeScanner.releaseResources()
+        }
         super.onPause()
     }
 }

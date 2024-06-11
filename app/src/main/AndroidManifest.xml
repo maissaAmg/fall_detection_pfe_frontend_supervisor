@@ -7,9 +7,12 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- Mapbox's permissions -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Include only if your app benefits from precise location access. -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Pour scanner le code QR -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!-- Mapbox's permissions -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Include only if your app benefits from precise location access. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Pour scanner le code QR -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
