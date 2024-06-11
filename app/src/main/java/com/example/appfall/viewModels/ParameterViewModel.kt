@@ -31,7 +31,7 @@ class ParameterViewModel(application: Application) : AndroidViewModel(applicatio
             override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
                 if (response.isSuccessful) {
                     _updateStatus.value = true
-                    Log.d("ParameterViewModel","${response.body()}")
+                    Log.d("ParameterViewModel", "${response.body()}")
                 } else {
                     handleErrorResponse(response.errorBody())
                     Log.e("ParameterViewModel", "Failed to update name: ${response.message()}")
@@ -46,54 +46,11 @@ class ParameterViewModel(application: Application) : AndroidViewModel(applicatio
         })
     }
 
-    fun updateSupervisorEmail(email: String) {
-        val request = UpdateSupervisorEmailRequest(email)
-        RetrofitInstance.fallApi.updateSupervisorEmail("Bearer $token", request).enqueue(object : Callback<UpdateSupervisorResponse> {
-            override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
-                if (response.isSuccessful) {
-                    _updateStatus.value = true
-                    Log.d("ParameterViewModel","${response.body()}")
-                } else {
-                    handleErrorResponse(response.errorBody())
-                    Log.e("ParameterViewModel", "Failed to update email: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<UpdateSupervisorResponse>, t: Throwable) {
-                val errorMessage = t.message ?: "Une erreur s'est produite lors de la mise à jour de l'email"
-                _updateErrorStatus.postValue(errorMessage)
-                Log.e("ParameterViewModel", "Failed to update email", t)
-            }
-        })
-    }
-
-    fun updateSupervisorPassword(password: String) {
-        val request = UpdateSupervisorPasswordRequest(password)
-        RetrofitInstance.fallApi.updateSupervisorPassword("Bearer $token", request).enqueue(object : Callback<UpdateSupervisorResponse> {
-            override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
-                if (response.isSuccessful) {
-                    _updateStatus.value = true
-                    Log.d("ParameterViewModel","${response.body()}")
-                } else {
-                    handleErrorResponse(response.errorBody())
-                    Log.e("ParameterViewModel", "Failed to update password: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<UpdateSupervisorResponse>, t: Throwable) {
-                val errorMessage = t.message ?: "Une erreur s'est produite lors de la mise à jour du mot de passe"
-                _updateErrorStatus.postValue(errorMessage)
-                Log.e("ParameterViewModel", "Failed to update password", t)
-            }
-        })
-    }
-
     private fun handleErrorResponse(errorBody: ResponseBody?) {
         val errorMessage = errorBody?.string()?.let { errorContent ->
             try {
                 val jsonObject = JSONObject(errorContent)
-                val nestedMessage = jsonObject.getJSONObject("message").getString("message")
-                nestedMessage
+                jsonObject.getString("message")
             } catch (e: Exception) {
                 "Une erreur s'est produite lors de la mise à jour"
             }
