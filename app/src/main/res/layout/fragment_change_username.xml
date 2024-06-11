@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nom"
+        android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_alignParentTop="true"
@@ -24,24 +25,18 @@
         android:hint="Nom"
         android:inputType="text"
         android:layout_below="@id/titleTextView"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:id="@+id/helpTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Aidez les gens à découvrir votre compte en utilisant le nom sous lequel vous êtes connu : votre nom complet ou votre surnom."
-        android:textSize="14sp"
-        android:layout_below="@id/usernameEditText"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@drawable/edittext_color"
+        android:textCursorDrawable="@drawable/cursor_color" />
 
     <ImageButton
         android:id="@+id/saveButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:src="@drawable/ic_check"
-        android:backgroundTint="@color/white"
+        android:background="@null"
+        android:scaleType="fitCenter"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="2dp" />
 
 </RelativeLayout>
