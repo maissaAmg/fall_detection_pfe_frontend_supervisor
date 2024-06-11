@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_parametersMainFragment_to_passwordFragment"
             app:destination="@id/passwordFragment" />
+        <action
+            android:id="@+id/action_parametersMainFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
     </fragment>
     <fragment
         android:id="@+id/nameFragment"
@@ -39,4 +42,13 @@
     <action
         android:id="@+id/action_global_parametersMainFragment"
         app:destination="@id/parametersMainFragment" />
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.example.appfall.views.fragments.EmailFragment"
+        android:label="fragment_email"
+        tools:layout="@layout/fragment_email" >
+        <action
+            android:id="@+id/action_emailFragment_to_parametersMainFragment"
+            app:destination="@id/parametersMainFragment" />
+    </fragment>
 </navigation>

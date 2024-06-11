@@ -27,6 +27,7 @@ class ParametersActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.nameFragment -> updateHeaderTitle("Changer le nom")
                 R.id.passwordFragment -> updateHeaderTitle("Changer le mot de passe")
+                R.id.emailFragment -> updateHeaderTitle("Changer l'adresse email")
                 R.id.parametersMainFragment -> updateHeaderTitle("Paramètres")
             }
         }
@@ -51,7 +52,7 @@ class ParametersActivity : AppCompatActivity() {
                 // If currently on the parametersMainFragment, go back to MainActivity
                 finish()
             }
-            R.id.nameFragment, R.id.passwordFragment -> {
+            R.id.nameFragment, R.id.passwordFragment, R.id.emailFragment -> {
                 // If currently on any other fragment, navigate back to parametersMainFragment
                 navController.navigate(R.id.action_global_parametersMainFragment)
             }

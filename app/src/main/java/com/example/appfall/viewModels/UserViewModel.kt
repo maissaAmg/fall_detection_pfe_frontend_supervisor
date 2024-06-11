@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.appfall.data.daoModels.UserDaoModel
 import com.example.appfall.data.models.LoginResponse
+import com.example.appfall.data.models.UpdateSupervisorEmailRequest
 import com.example.appfall.data.models.UpdateSupervisorNameRequest
 import com.example.appfall.data.models.UpdateSupervisorPasswordRequest
 import com.example.appfall.data.models.UpdateSupervisorResponse
@@ -46,6 +47,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _updatePasswordResponse: MutableLiveData<UpdateSupervisorResponse> = MutableLiveData()
     val updatePasswordResponse: LiveData<UpdateSupervisorResponse> = _updatePasswordResponse
+
+    private val _updateEmailResponse: MutableLiveData<UpdateSupervisorResponse> = MutableLiveData()
+    val updateEmailResponse: LiveData<UpdateSupervisorResponse> = _updateEmailResponse
 
 
     fun addUser(user: User) {
@@ -157,6 +161,27 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
                 if (response.isSuccessful) {
                     _updatePasswordResponse.value = response.body()
+                    Log.d("UserViewModel", "${response.body()}")
+                } else {
+                    handleErrorResponse(response.errorBody())
+                    Log.e("UserViewModel", "Failed to update password: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<UpdateSupervisorResponse>, t: Throwable) {
+                val errorMessage = t.message ?: "Une erreur s'est produite lors de la mise à jour du mot de passe"
+                _addErrorStatus.postValue(errorMessage)
+                Log.e("UserViewModel", "Failed to update password", t)
+            }
+        })
+    }
+
+    fun updateEmail(email: String) {
+        val request = UpdateSupervisorEmailRequest(email)
+        RetrofitInstance.fallApi.updateSupervisorEmail("Bearer $token", request).enqueue(object : Callback<UpdateSupervisorResponse> {
+            override fun onResponse(call: Call<UpdateSupervisorResponse>, response: Response<UpdateSupervisorResponse>) {
+                if (response.isSuccessful) {
+                    _updateEmailResponse.value = response.body()
                     Log.d("UserViewModel", "${response.body()}")
                 } else {
                     handleErrorResponse(response.errorBody())

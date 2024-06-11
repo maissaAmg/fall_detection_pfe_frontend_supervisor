@@ -41,6 +41,10 @@ class ParametersMainFragment : Fragment() {
             navigateToChangePassword()
         }
 
+        binding.layoutChangeProfileEmail.setOnClickListener {
+            navigateToChangeProfileEmail()
+        }
+
 
         binding.layoutLogout.setOnClickListener {
             println("hellooo")
@@ -54,6 +58,10 @@ class ParametersMainFragment : Fragment() {
 
     private fun navigateToChangePassword() {
         findNavController().navigate(R.id.action_parametersMainFragment_to_passwordFragment)
+    }
+
+    private fun navigateToChangeProfileEmail(){
+        findNavController().navigate(R.id.action_parametersMainFragment_to_emailFragment)
     }
 
 
