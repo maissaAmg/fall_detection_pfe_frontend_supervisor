@@ -6,6 +6,10 @@ import com.example.appfall.data.models.FallFilter
 import com.example.appfall.data.models.FallResponse
 import com.example.appfall.data.models.LoginResponse
 import com.example.appfall.data.models.MonthYear
+import com.example.appfall.data.models.UpdateSupervisorEmailRequest
+import com.example.appfall.data.models.UpdateSupervisorPasswordRequest
+import com.example.appfall.data.models.UpdateSupervisorNameRequest
+import com.example.appfall.data.models.UpdateSupervisorResponse
 import com.example.appfall.data.models.User
 import com.example.appfall.data.models.UserCredential
 import retrofit2.Call
@@ -13,6 +17,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface FallAPI {
@@ -40,6 +45,22 @@ interface FallAPI {
                        @Path("userId") userId: String, @Body request: MonthYear
     ): Call<DailyFallsResponse>
 
+    @PUT("supervisors/updateSupervisor")
+    fun updateSupervisorName(
+        @Header("Authorization") token: String,
+        @Body request: UpdateSupervisorNameRequest
+    ): Call<UpdateSupervisorResponse>
 
+    @PUT("supervisors/updateSupervisor")
+    fun updateSupervisorEmail(
+        @Header("Authorization") token: String,
+        @Body request: UpdateSupervisorEmailRequest
+    ): Call<UpdateSupervisorResponse>
+
+    @PUT("supervisors/updateSupervisor")
+    fun updateSupervisorPassword(
+        @Header("Authorization") token: String,
+        @Body request: UpdateSupervisorPasswordRequest
+    ): Call<UpdateSupervisorResponse>
 
 }

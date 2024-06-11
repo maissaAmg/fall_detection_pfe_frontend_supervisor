@@ -64,5 +64,14 @@
         android:id="@+id/parameterFragment"
         android:name="com.example.appfall.views.fragments.ParameterFragment"
         android:label="fragment_parameter"
-        tools:layout="@layout/fragment_parameter" />
+        tools:layout="@layout/fragment_parameter" >
+        <action
+            android:id="@+id/action_parameterFragment_to_changeUsernameFragment"
+            app:destination="@id/changeUsernameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeUsernameFragment"
+        android:name="com.example.appfall.views.fragments.ChangeUsernameFragment"
+        android:label="fragment_change_username"
+        tools:layout="@layout/fragment_change_username" />
 </navigation>

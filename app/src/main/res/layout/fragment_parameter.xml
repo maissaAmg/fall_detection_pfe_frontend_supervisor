@@ -60,6 +60,7 @@
 
         <!-- Première ligne : Icone de profil et "Change Username" -->
         <LinearLayout
+            android:id="@+id/layoutChangeName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

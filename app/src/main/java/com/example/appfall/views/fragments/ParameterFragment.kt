@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -31,5 +32,14 @@ class ParameterFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_parameter, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val changeUsername: LinearLayout = view.findViewById(R.id.layoutChangeName)
+        changeUsername.setOnClickListener {
+            findNavController().navigate(R.id.action_parameterFragment_to_changeUsernameFragment)
+        }
+
+    }
 
 }
