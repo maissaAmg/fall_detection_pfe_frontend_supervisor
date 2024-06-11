@@ -10,7 +10,7 @@ import com.example.appfall.R
 import com.example.appfall.databinding.ContactBinding
 import com.example.appfall.data.models.ConnectedSupervisor
 
-class ContactsAdapter ( private val onContactClick: (String) -> Unit) : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
+class ContactsAdapter ( private val onContactClick: (String, Boolean) -> Unit) : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
     private var contactsList = ArrayList<ConnectedSupervisor>()
 
     fun setContacts(contactsList: ArrayList<ConnectedSupervisor>) {
@@ -50,7 +50,7 @@ class ContactsAdapter ( private val onContactClick: (String) -> Unit) : Recycler
                 println("inDanger ${contact.inDanger}")
                 root.setCardBackgroundColor(ContextCompat.getColor(root.context, cardColor))
 
-                root.setOnClickListener { onContactClick(contact._id) }
+                root.setOnClickListener { onContactClick(contact._id, contact.isPaused) }
             }
         }
     }

@@ -24,6 +24,8 @@ class FallsFragment : Fragment() {
     private lateinit var binding: FragmentFallsBinding
     private lateinit var fallViewModel: FallsViewModel
     private lateinit var fallAdapter: FallAdapter
+    private var isPaused: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,10 @@ class FallsFragment : Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+
+        arguments?.let {
+            isPaused = it.getBoolean("isPaused", false)
+        }
 
     }
 
@@ -94,7 +100,9 @@ class FallsFragment : Fragment() {
         }
 
         // Initial state for Switch and TextView
-        updateStatusText(binding.switchPauseTracking.isChecked)
+        binding.switchPauseTracking.isChecked = !isPaused
+        updateStatusText(!isPaused)
+
 
         // Switch listener
         binding.switchPauseTracking.setOnCheckedChangeListener { _, isChecked ->
@@ -146,7 +154,7 @@ class FallsFragment : Fragment() {
             binding.switchStatus.text = "Activé"
             binding.switchStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.custom_red))
         } else {
-            binding.switchStatus.text = "Désactivé"
+            binding.switchStatus.text = "En pause"
             binding.switchStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
         }
     }
