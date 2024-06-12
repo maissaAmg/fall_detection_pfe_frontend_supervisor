@@ -34,6 +34,7 @@
                 android:textColor="#BF3131"
                 android:textSize="28sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/myfont"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -77,5 +78,21 @@
         android:indeterminate="true"
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/custom_red"/>
+
+    <TextView
+        android:id="@+id/no_contacts_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Votre liste de contacts est vide pour le moment."
+        android:textSize="18sp"
+        android:fontFamily="@font/myfont"
+        android:textAlignment="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

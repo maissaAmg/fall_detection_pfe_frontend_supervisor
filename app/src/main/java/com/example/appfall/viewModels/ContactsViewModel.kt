@@ -22,6 +22,7 @@ class ContactsViewModel(application: Application) : AndroidViewModel(application
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
     private val mutableContactsList: MutableLiveData<List<ConnectedSupervisor>> = MutableLiveData()
     private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    private val isListEmpty: MutableLiveData<Boolean> = MutableLiveData()
 
     private lateinit var token: String
 
@@ -39,17 +40,16 @@ class ContactsViewModel(application: Application) : AndroidViewModel(application
         isLoading.postValue(true)
         RetrofitInstance.fallApi.getContacts("Bearer $token").enqueue(object : Callback<ConnectedSupervisorsResponse> {
             override fun onResponse(call: Call<ConnectedSupervisorsResponse>, response: Response<ConnectedSupervisorsResponse>) {
-                if (response.isSuccessful) {
-                    mutableContactsList.postValue(response.body()?.connectedUsers ?: emptyList())
-                } else {
-                    mutableContactsList.postValue(emptyList())
-                }
+                val contacts = response.body()?.connectedUsers ?: emptyList()
+                mutableContactsList.postValue(contacts)
+                isListEmpty.postValue(contacts.isEmpty())
                 isLoading.postValue(false)
             }
 
             override fun onFailure(call: Call<ConnectedSupervisorsResponse>, t: Throwable) {
                 Log.d("ContactsViewModel", t.message.toString())
                 mutableContactsList.postValue(emptyList())
+                isListEmpty.postValue(true)
                 isLoading.postValue(false)
             }
         })
@@ -62,4 +62,9 @@ class ContactsViewModel(application: Application) : AndroidViewModel(application
     fun observeLoading(): LiveData<Boolean> {
         return isLoading
     }
+
+    fun observeIsListEmpty(): LiveData<Boolean> {
+        return isListEmpty
+    }
 }
+

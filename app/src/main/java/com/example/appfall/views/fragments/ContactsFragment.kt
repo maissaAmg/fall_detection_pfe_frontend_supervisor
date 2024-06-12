@@ -50,6 +50,7 @@ class ContactsFragment : Fragment() {
         contactsViewModel.getContacts()
         observeContacts()
         observeLoading()
+        observeEmptyList()
 
         // Ajoutez le gestionnaire de clic pour l'icône de paramètres
         binding.icSettings.setOnClickListener {
@@ -73,4 +74,11 @@ class ContactsFragment : Fragment() {
             binding.contactsList.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
+
+    private fun observeEmptyList() {
+        contactsViewModel.observeIsListEmpty().observe(viewLifecycleOwner) { isEmpty ->
+            binding.noContactsText.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        }
+    }
 }
+
