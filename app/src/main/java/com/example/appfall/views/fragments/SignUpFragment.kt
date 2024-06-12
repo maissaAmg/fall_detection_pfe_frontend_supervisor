@@ -14,9 +14,11 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.appfall.R
 import com.example.appfall.data.models.User
 import com.example.appfall.databinding.FragmentSignUpBinding
@@ -74,6 +76,10 @@ class SignUpFragment : Fragment() {
         }
         observeLoginResponse()
         observeAddUserError()
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp() // Cette ligne retourne au fragment précédent
+        }
     }
 
     private fun setListeners(passwordEditText: EditText, phoneEditText: EditText, confirmEditText: EditText) {
