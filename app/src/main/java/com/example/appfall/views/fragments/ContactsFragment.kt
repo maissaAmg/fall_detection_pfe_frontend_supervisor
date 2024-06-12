@@ -31,7 +31,6 @@ class ContactsFragment : Fragment() {
         }
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,8 +46,10 @@ class ContactsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = contactsAdapter
         }
+
         contactsViewModel.getContacts()
         observeContacts()
+        observeLoading()
 
         // Ajoutez le gestionnaire de clic pour l'icône de paramètres
         binding.icSettings.setOnClickListener {
@@ -63,6 +64,13 @@ class ContactsFragment : Fragment() {
             contacts?.let {
                 contactsAdapter.setContacts(ArrayList(it))
             }
+        }
+    }
+
+    private fun observeLoading() {
+        contactsViewModel.observeLoading().observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.contactsList.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
 }
