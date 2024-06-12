@@ -1,11 +1,16 @@
 package com.example.appfall.views.fragments
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -151,7 +156,7 @@ class FallsFragment : Fragment() {
                     }
                     updateStatusText(expectedSwitchState)
                 } else {
-                    showErrorDialog("échec", "Erreur lors du changement de l'état de suivi")
+                    showErrorDialog("échec", "Erreur lors du changement de l'état du suivi")
                     binding.switchPauseTracking.setOnCheckedChangeListener(null)
                     binding.switchPauseTracking.isChecked = expectedSwitchState
                     binding.switchPauseTracking.setOnCheckedChangeListener { _, isChecked ->
@@ -201,17 +206,30 @@ class FallsFragment : Fragment() {
     }
 
     private fun showErrorDialog(title: String, message: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.popup_message, null)
-        builder.setView(view)
-        val titleTextView = view.findViewById<TextView>(R.id.tvTitle)
-        val messageTextView = view.findViewById<TextView>(R.id.tvMessage)
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_error)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // Ajuster la taille de la boîte de dialogue
+        val layoutParams = WindowManager.LayoutParams()
+        layoutParams.copyFrom(dialog.window?.attributes)
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.window?.attributes = layoutParams
+
+        val titleTextView = dialog.findViewById<TextView>(R.id.tvTitle)
+        val messageTextView = dialog.findViewById<TextView>(R.id.tvMessage)
+        val okButton = dialog.findViewById<Button>(R.id.btnOk)
+
         titleTextView.text = title
         messageTextView.text = message
-        builder.setPositiveButton("OK") { dialog, _ ->
+
+        okButton.setOnClickListener {
             dialog.dismiss()
         }
-        errorDialog = builder.create()
-        errorDialog.show()
+
+        dialog.show()
     }
+
 }

@@ -162,7 +162,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/rounded_button_filter"
+            android:background="@drawable/custom_button_background"
             android:fontFamily="@font/myfont"
             android:text="Supprimer la liaison"
             android:textAllCaps="false"
