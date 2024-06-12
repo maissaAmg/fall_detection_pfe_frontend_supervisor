@@ -78,23 +78,37 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getDailyFalls(userId: String, month: Int, year: Int) {
-        RetrofitInstance.fallApi.getDailyFalls("Bearer $token", userId, MonthYear(month,year)).enqueue(object : Callback<DailyFallsResponse> {
-            override fun onResponse(call: Call<DailyFallsResponse>, response: Response<DailyFallsResponse>) {
-                if (response.isSuccessful) {
-                   mutableDailyFalls.value = response.body()
-                } else {
-                    handleErrorResponse(response.errorBody())
-                    Log.e("FallViewModel", "Failed to retrieve daily falls: ${response.message()}")
-                }
+    private suspend fun ensureTokenInitialized() {
+        withContext(Dispatchers.IO) {
+            if (!::token.isInitialized) {
+                val user = userDao.getUser()
+                user?.let {
+                    token = it.token
+                } ?: throw UninitializedPropertyAccessException("Token has not been initialized")
             }
+        }
+    }
 
-            override fun onFailure(call: Call<DailyFallsResponse>, t: Throwable) {
-                val errorMessage = t.message ?: "Une erreur s'est produite lors de la récupération des données"
-                _addErrorStatus.postValue(errorMessage)
-                Log.e("FallViewModel", "Failed to retrieve daily falls: $errorMessage", t)
-            }
-        })
+    fun getDailyFalls(userId: String, month: Int, year: Int) {
+        viewModelScope.launch {
+            ensureTokenInitialized()
+            RetrofitInstance.fallApi.getDailyFalls("Bearer $token", userId, MonthYear(month, year)).enqueue(object : Callback<DailyFallsResponse> {
+                override fun onResponse(call: Call<DailyFallsResponse>, response: Response<DailyFallsResponse>) {
+                    if (response.isSuccessful) {
+                        mutableDailyFalls.value = response.body()
+                    } else {
+                        handleErrorResponse(response.errorBody())
+                        Log.e("FallViewModel", "Failed to retrieve daily falls: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<DailyFallsResponse>, t: Throwable) {
+                    val errorMessage = t.message ?: "Une erreur s'est produite lors de la récupération des données"
+                    _addErrorStatus.postValue(errorMessage)
+                    Log.e("FallViewModel", "Failed to retrieve daily falls: $errorMessage", t)
+                }
+            })
+        }
     }
 
     fun disconnect(contactId: String) {

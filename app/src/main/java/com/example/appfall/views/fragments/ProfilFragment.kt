@@ -108,8 +108,9 @@ class ProfilFragment : Fragment() {
     private fun fetchDataAndUpdateChart() {
         val selectedMonth = monthSpinner.selectedItemPosition
         val selectedYear = yearSpinner.selectedItem.toString().toInt()
-        println("Selected year ${selectedYear}")
-        println("Selected month ${selectedMonth}")
+        println("Selected year $selectedYear")
+        println("Selected month $selectedMonth")
+
         fallsViewModel.getDailyFalls("662043ca50a2db0cdd6ecba5", selectedMonth + 1, selectedYear)
         observeDailyFalls()
 
