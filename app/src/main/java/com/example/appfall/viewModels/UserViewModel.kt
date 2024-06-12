@@ -26,7 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
-    private var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NTczMTY0ODViOTFiZjY3ZGZjNjM5ZiIsImlhdCI6MTcxNjk5MDMwOH0.4HxGAUghy9zX-LzXG7ukzY3ugx9Pld_kDGz342E0_Uc"
+    //private var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NTczMTY0ODViOTFiZjY3ZGZjNjM5ZiIsImlhdCI6MTcxNjk5MDMwOH0.4HxGAUghy9zX-LzXG7ukzY3ugx9Pld_kDGz342E0_Uc"
 
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
 
@@ -50,6 +50,16 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _updateEmailResponse: MutableLiveData<UpdateSupervisorResponse> = MutableLiveData()
     val updateEmailResponse: LiveData<UpdateSupervisorResponse> = _updateEmailResponse
+
+    private lateinit var token: String
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = userDao.getUser()
+            user?.let {
+                token = it.token
+            }
+        }
+    }
 
 
     fun addUser(user: User) {

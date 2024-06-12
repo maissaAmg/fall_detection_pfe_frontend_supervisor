@@ -12,6 +12,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
@@ -24,6 +25,7 @@ class FallsFragment : Fragment() {
     private lateinit var binding: FragmentFallsBinding
     private lateinit var fallViewModel: FallsViewModel
     private lateinit var fallAdapter: FallAdapter
+    private var userId: String = ""
     private var isPaused: Boolean = false
 
 
@@ -39,6 +41,7 @@ class FallsFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
         arguments?.let {
+            userId = it.getString("userId","")
             isPaused = it.getBoolean("isPaused", false)
         }
 
@@ -63,10 +66,10 @@ class FallsFragment : Fragment() {
         }
 
 
-        val userId = "662043ca50a2db0cdd6ecba5"
+        //val userId = "662043ca50a2db0cdd6ecba5"
         //val userId = arguments?.getString("userId") ?: return
-        val id = arguments?.getString("userId") ?: return
-        Log.d("FallsFragmentUserId","$id")
+        //val id = arguments?.getString("userId") ?: return
+        Log.d("FallsFragmentUserId","$userId")
         Log.d("FallsFragmentUserId","*********************************")
 
         // Ajouter cet appel pour charger toutes les chutes par défaut
@@ -95,8 +98,10 @@ class FallsFragment : Fragment() {
 
         observeFalls()
 
+
         binding.btnDelete.setOnClickListener {
-            showDeleteConfirmationDialog()
+            showDeleteConfirmationDialog(userId)
+
         }
 
         // Initial state for Switch and TextView
@@ -106,8 +111,14 @@ class FallsFragment : Fragment() {
 
         // Switch listener
         binding.switchPauseTracking.setOnCheckedChangeListener { _, isChecked ->
+            fallViewModel.pause(userId, !isChecked)
             updateStatusText(isChecked)
         }
+
+
+
+        observePauseStatus()
+        observeDisconnectStatus()
     }
 
     private fun setButtonState(clickedButton: Button, observerFunction: () -> Unit) {
@@ -134,12 +145,35 @@ class FallsFragment : Fragment() {
         }
     }
 
-    private fun showDeleteConfirmationDialog() {
+    private fun observePauseStatus() {
+        fallViewModel.observePauseStatus().observe(viewLifecycleOwner) { pauseMessage ->
+            pauseMessage?.let {
+                Log.d("FallsFragment", "Message de pause: $it")
+                // Affichez un message à l'utilisateur si nécessaire
+
+            }
+        }
+    }
+
+    private fun observeDisconnectStatus() {
+        fallViewModel.observeDisconnectStatus().observe(viewLifecycleOwner) { disconnectMessage ->
+            disconnectMessage?.let {
+                Log.d("FallsFragment", "Message de déconnexion: $it")
+                // Affichez un message à l'utilisateur si
+                if (it == "Disconnected successfully") {
+                    findNavController().navigate(R.id.action_fallsFragment_to_contactsFragment)
+                }
+
+            }
+        }
+    }
+
+    private fun showDeleteConfirmationDialog(contactId: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Alerte !")
         builder.setMessage("En supprimant cette personne, vous ne recevrez plus d'alertes de son appareil.")
         builder.setPositiveButton("Confirmer") { dialog, which ->
-            // Action à réaliser lors de la confirmation
+            fallViewModel.disconnect(contactId)  // Appeler la méthode de déconnexion
         }
         builder.setNegativeButton("Annuler") { dialog, which ->
             dialog.dismiss()

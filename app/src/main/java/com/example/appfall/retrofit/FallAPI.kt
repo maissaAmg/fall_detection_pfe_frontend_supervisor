@@ -2,16 +2,19 @@ package com.example.appfall.retrofit
 
 import com.example.appfall.data.models.ConnectedSupervisorsResponse
 import com.example.appfall.data.models.DailyFallsResponse
+import com.example.appfall.data.models.DisconnectedResponse
 import com.example.appfall.data.models.FallFilter
 import com.example.appfall.data.models.FallResponse
 import com.example.appfall.data.models.LoginResponse
 import com.example.appfall.data.models.MonthYear
+import com.example.appfall.data.models.PausedResponse
 import com.example.appfall.data.models.UpdateSupervisorEmailRequest
 import com.example.appfall.data.models.UpdateSupervisorPasswordRequest
 import com.example.appfall.data.models.UpdateSupervisorNameRequest
 import com.example.appfall.data.models.UpdateSupervisorResponse
 import com.example.appfall.data.models.User
 import com.example.appfall.data.models.UserCredential
+import com.example.appfall.data.models.isPausedRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -62,5 +65,14 @@ interface FallAPI {
         @Header("Authorization") token: String,
         @Body request: UpdateSupervisorPasswordRequest
     ): Call<UpdateSupervisorResponse>
+
+    @GET("/notifications/disconnect/{contactId}")
+    fun disconnect(@Header("Authorization") token: String,
+                   @Path("contactId") contactId: String ): Call<DisconnectedResponse>
+
+    @PUT("/notifications/pauseNotification/{contactId}")
+    fun pause(@Header("Authorization") token: String,
+                   @Path("contactId") contactId: String,
+                   @Body request: isPausedRequest): Call<PausedResponse>
 
 }

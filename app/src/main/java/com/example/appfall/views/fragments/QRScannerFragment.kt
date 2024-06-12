@@ -186,9 +186,19 @@ class QRScannerFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // Réinitialiser les vues à chaque reprise
+        resetViews()
         if (::codeScanner.isInitialized) {
             codeScanner.startPreview()
         }
+    }
+
+    private fun resetViews() {
+        loadingAnimation.visibility = View.INVISIBLE
+        successIcon.visibility = View.INVISIBLE
+        failureIcon.visibility = View.INVISIBLE
+        statusText.visibility = View.INVISIBLE
+        view?.findViewById<CodeScannerView>(R.id.scanner_view)?.visibility = View.VISIBLE
     }
 
     override fun onPause() {

@@ -12,6 +12,9 @@ import com.example.appfall.data.models.Fall
 import com.example.appfall.data.models.FallFilter
 import com.example.appfall.data.models.LoginResponse
 import com.example.appfall.data.models.MonthYear
+import com.example.appfall.data.models.isPausedRequest
+import com.example.appfall.data.repositories.AppDatabase
+import com.example.appfall.data.repositories.dataStorage.UserDao
 import com.example.appfall.retrofit.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,13 +29,32 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 
 class FallsViewModel(application: Application) : AndroidViewModel(application) {
+    private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
+
     private val mutableFallsList: MutableLiveData<List<Fall>> = MutableLiveData()
-    private var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NTczMTY0ODViOTFiZjY3ZGZjNjM5ZiIsImlhdCI6MTcxNjk5MDMwOH0.4HxGAUghy9zX-LzXG7ukzY3ugx9Pld_kDGz342E0_Uc"
+    //private var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NTczMTY0ODViOTFiZjY3ZGZjNjM5ZiIsImlhdCI6MTcxNjk5MDMwOH0.4HxGAUghy9zX-LzXG7ukzY3ugx9Pld_kDGz342E0_Uc"
 
     private val _addErrorStatus: MutableLiveData<String> = MutableLiveData()
     val addErrorStatus: LiveData<String> = _addErrorStatus
 
+    private val _disconnectStatus: MutableLiveData<String> = MutableLiveData()
+    val disconnectStatus: LiveData<String> = _disconnectStatus
+
+    private val _pauseStatus: MutableLiveData<String> = MutableLiveData()
+    val pauseStatus: LiveData<String> = _pauseStatus
+
     private val mutableDailyFalls: MutableLiveData<DailyFallsResponse> = MutableLiveData()
+
+    private lateinit var token: String
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = userDao.getUser()
+            user?.let {
+                token = it.token
+            }
+        }
+    }
     fun getFalls(userId: String, filter: String) {
         viewModelScope.launch {
             try {
@@ -75,12 +97,73 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
+    fun disconnect(contactId: String) {
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitInstance.fallApi.disconnect("Bearer $token", contactId).execute()
+                }
+                if (response.isSuccessful) {
+                    val disconnectedResponse = response.body()
+                    disconnectedResponse?.let {
+                        Log.d("FallsViewModel", "Déconnexion réussie: $it")
+                        _disconnectStatus.postValue(it.message)
+                    } ?: run {
+                        Log.d("FallViewModel", "Response body is null")
+                        _disconnectStatus.postValue("Le corps de la réponse est nul")
+                    }
+                } else {
+                    Log.d("FallViewModel", "Response not successful: ${response.code()}")
+                    handleErrorResponse(response.errorBody())
+                }
+            } catch (e: Exception) {
+                Log.e("FallViewModel", "API call failed: ${e.message}")
+                _disconnectStatus.postValue("Une erreur s'est produite lors de la déconnexion")
+            }
+        }
+    }
+
+    fun pause(contactId: String, isPaused: Boolean) {
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    Log.d("Pause","${contactId} + ${token} + ${isPaused.toString()}")
+                    RetrofitInstance.fallApi.pause("Bearer $token", contactId, isPausedRequest((isPaused))).execute()
+                }
+                if (response.isSuccessful) {
+                    val pausedResponse = response.body()
+                    pausedResponse?.let {
+                        Log.d("FallsViewModel", "Suivi en pause: $it")
+                        _pauseStatus.postValue(it.message)
+                    } ?: run {
+                        Log.d("FallViewModel", "Response body is null")
+                        _pauseStatus.postValue("Le corps de la réponse est nul")
+                    }
+                } else {
+                    Log.d("FallViewModel", "Response not successful: ${response.code()}")
+                    handleErrorResponse(response.errorBody())
+                }
+            } catch (e: Exception) {
+                Log.e("FallViewModel", "API call failed: ${e.message}")
+                _pauseStatus.postValue("Une erreur s'est produite lors de l'opération de suspension de suivi")
+            }
+        }
+    }
+
     fun observeFallsList(): LiveData<List<Fall>> {
         return mutableFallsList
     }
 
     fun observeDailyFalls(): LiveData<DailyFallsResponse> {
         return mutableDailyFalls
+    }
+
+    fun observeDisconnectStatus(): LiveData<String> {
+        return _disconnectStatus
+    }
+
+    fun observePauseStatus(): LiveData<String> {
+        return _pauseStatus
     }
 
     private fun handleErrorResponse(errorBody: ResponseBody?) {
