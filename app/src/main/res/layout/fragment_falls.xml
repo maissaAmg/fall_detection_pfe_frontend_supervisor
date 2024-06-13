@@ -96,6 +96,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <!-- TextView for empty list message -->
+        <TextView
+            android:id="@+id/empty_list_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="La liste est vide pour le moment"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:fontFamily="@font/myfont"
+            android:textColor="#D3D3D3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="12dp"/>
+
         <!-- ProgressBar for loading -->
         <ProgressBar
             android:id="@+id/progress_bar"

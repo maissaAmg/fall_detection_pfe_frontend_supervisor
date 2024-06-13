@@ -147,10 +147,14 @@ class FallsFragment : Fragment() {
 
     private fun observeFalls() {
         fallViewModel.observeFallsList().observe(viewLifecycleOwner) { falls ->
-            falls?.let {
-                fallAdapter.setFalls(ArrayList(it))
-                binding.progressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
+            if (falls.isNullOrEmpty()) {
+                binding.emptyListMessage.visibility = View.VISIBLE
+                binding.fallsList.visibility = View.GONE
+            } else {
+                binding.emptyListMessage.visibility = View.GONE
                 binding.fallsList.visibility = View.VISIBLE
+                fallAdapter.setFalls(ArrayList(falls))
             }
         }
     }
