@@ -199,19 +199,39 @@ class FallsFragment : Fragment() {
     }
 
     private fun showDeleteConfirmationDialog(contactId: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Alerte !")
-        builder.setMessage("En supprimant cette personne, vous ne recevrez plus d'alertes de son appareil.")
-        builder.setPositiveButton("Confirmer") { dialog, _ ->
+        val dialogView = layoutInflater.inflate(R.layout.dialog_warning, null)
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dialogView)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // Ajuster la taille de la boîte de dialogue
+        val layoutParams = WindowManager.LayoutParams()
+        layoutParams.copyFrom(dialog.window?.attributes)
+        layoutParams.width = resources.getDimensionPixelSize(R.dimen.dialog_width) // Définissez la largeur souhaitée en dp
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.window?.attributes = layoutParams
+
+        val titleTextView = dialog.findViewById<TextView>(R.id.tvTitle)
+        val messageTextView = dialog.findViewById<TextView>(R.id.tvMessage)
+        val confirmButton = dialog.findViewById<Button>(R.id.btnConfirm)
+        val cancelButton = dialog.findViewById<Button>(R.id.btnCancel)
+
+        titleTextView.text = "Attention!"
+        messageTextView.text = "En supprimant cette personne vous ne recevrez plus d'alertes de son appareil."
+
+        confirmButton.setOnClickListener {
             fallViewModel.disconnect(contactId)
-        }
-        builder.setNegativeButton("Annuler") { dialog, _ ->
             dialog.dismiss()
         }
 
-        val dialog = builder.create()
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
+
 
     private fun updateStatusText(isChecked: Boolean) {
         if (isChecked) {
