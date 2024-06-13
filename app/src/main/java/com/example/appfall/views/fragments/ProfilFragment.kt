@@ -26,7 +26,7 @@ import com.github.mikephil.charting.data.BarData
 import java.util.Calendar
 
 class ProfilFragment : Fragment() {
-    private lateinit var fallsViewModel: FallsViewModel
+    /*private lateinit var fallsViewModel: FallsViewModel
     private lateinit var progressBar: ProgressBar
     private lateinit var barChart: BarChart
     private lateinit var monthSpinner: Spinner
@@ -111,7 +111,7 @@ class ProfilFragment : Fragment() {
         println("Selected year $selectedYear")
         println("Selected month $selectedMonth")
 
-        fallsViewModel.getDailyFalls("662043ca50a2db0cdd6ecba5", selectedMonth + 1, selectedYear)
+        fallsViewModel.getDailyFalls(selectedMonth + 1, selectedYear)
         observeDailyFalls()
 
         monthSpinner.visibility = View.VISIBLE
@@ -215,5 +215,5 @@ class ProfilFragment : Fragment() {
         barChart.animateXY(1000, 1000)
 
         barChart.invalidate()
-    }
+    }*/
 }

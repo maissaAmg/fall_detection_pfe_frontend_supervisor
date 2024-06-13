@@ -6,11 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.appfall.data.daoModels.UserDaoModel
+import com.example.appfall.data.models.DailyFallsRequest
 import com.example.appfall.data.models.DailyFallsResponse
 import com.example.appfall.data.models.Fall
 import com.example.appfall.data.models.FallFilter
-import com.example.appfall.data.models.LoginResponse
 import com.example.appfall.data.models.MonthYear
 import com.example.appfall.data.models.isPausedRequest
 import com.example.appfall.data.repositories.AppDatabase
@@ -24,9 +23,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.Path
 
 class FallsViewModel(application: Application) : AndroidViewModel(application) {
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
@@ -89,10 +85,10 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getDailyFalls(userId: String, month: Int, year: Int) {
+    fun getDailyFalls(month: Int, year: Int) {
         viewModelScope.launch {
             ensureTokenInitialized()
-            RetrofitInstance.fallApi.getDailyFalls("Bearer $token", userId, MonthYear(month, year)).enqueue(object : Callback<DailyFallsResponse> {
+            RetrofitInstance.fallApi.getDailyFalls("Bearer $token", DailyFallsRequest(month, year)).enqueue(object : Callback<DailyFallsResponse> {
                 override fun onResponse(call: Call<DailyFallsResponse>, response: Response<DailyFallsResponse>) {
                     if (response.isSuccessful) {
                         mutableDailyFalls.value = response.body()

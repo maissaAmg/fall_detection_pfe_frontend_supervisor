@@ -1,6 +1,7 @@
 package com.example.appfall.retrofit
 
 import com.example.appfall.data.models.ConnectedSupervisorsResponse
+import com.example.appfall.data.models.DailyFallsRequest
 import com.example.appfall.data.models.DailyFallsResponse
 import com.example.appfall.data.models.DisconnectedResponse
 import com.example.appfall.data.models.FallFilter
@@ -43,10 +44,9 @@ interface FallAPI {
                        @Path("userId") userId: String, @Body request: FallFilter
     ): Call<FallResponse>
 
-    @POST("falls/getDailyFalls/{userId}")
+    @POST("falls/getDailyFalls")
     fun getDailyFalls(@Header("Authorization") token: String,
-                       @Path("userId") userId: String, @Body request: MonthYear
-    ): Call<DailyFallsResponse>
+                      @Body request: DailyFallsRequest): Call<DailyFallsResponse>
 
     @PUT("supervisors/updateSupervisor")
     fun updateSupervisorName(
