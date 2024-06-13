@@ -98,8 +98,8 @@
 
     <ImageView
         android:id="@+id/ic_no_wifi"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:src="@drawable/ic_no_wifi"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"

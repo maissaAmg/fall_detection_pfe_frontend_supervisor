@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
 import com.example.appfall.adapters.FallAdapter
 import com.example.appfall.databinding.FragmentFallsBinding
+import com.example.appfall.services.NetworkHelper
 import com.example.appfall.viewModels.FallsViewModel
 
 class FallsFragment : Fragment() {
@@ -74,32 +75,27 @@ class FallsFragment : Fragment() {
             adapter = fallAdapter
         }
 
-        Log.d("FallsFragmentUserId", "$userId")
-        Log.d("FallsFragmentUserId", "*********************************")
-
-        fallViewModel.getFalls(userId, "all")
+        loadFalls("all")
 
         binding.btnAll.setOnClickListener {
-            fallViewModel.getFalls(userId, "all")
+            loadFalls("all")
             setButtonState(binding.btnAll) { observeFalls() }
         }
 
         binding.btnActive.setOnClickListener {
-            fallViewModel.getFalls(userId, "active")
+            loadFalls("active")
             setButtonState(binding.btnActive) { observeFalls() }
         }
 
         binding.btnRescued.setOnClickListener {
-            fallViewModel.getFalls(userId, "rescued")
+            loadFalls("rescued")
             setButtonState(binding.btnRescued) { observeFalls() }
         }
 
         binding.btnFalse.setOnClickListener {
-            fallViewModel.getFalls(userId, "false")
+            loadFalls("false")
             setButtonState(binding.btnFalse) { observeFalls() }
         }
-
-        observeFalls()
 
         binding.btnDelete.setOnClickListener {
             showDeleteConfirmationDialog(userId)
@@ -116,8 +112,22 @@ class FallsFragment : Fragment() {
             }
         }
 
+        observeFalls()
         observePauseStatus()
         observeDisconnectStatus()
+    }
+
+    private fun loadFalls(type: String) {
+        val networkHelper = NetworkHelper(requireContext())
+        if (networkHelper.isInternetAvailable()) {
+            binding.noConnectionLayout.visibility = View.GONE
+            binding.fallsList.visibility = View.VISIBLE
+            fallViewModel.getFalls(userId, type)
+            observeFalls()
+        } else {
+            binding.noConnectionLayout.visibility = View.VISIBLE
+            binding.fallsList.visibility = View.GONE
+        }
     }
 
     private fun setButtonState(clickedButton: Button, observerFunction: () -> Unit) {
@@ -231,5 +241,5 @@ class FallsFragment : Fragment() {
 
         dialog.show()
     }
-
 }
+
