@@ -121,12 +121,14 @@ class FallsFragment : Fragment() {
         val networkHelper = NetworkHelper(requireContext())
         if (networkHelper.isInternetAvailable()) {
             binding.noConnectionLayout.visibility = View.GONE
-            binding.fallsList.visibility = View.VISIBLE
+            binding.fallsList.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
             fallViewModel.getFalls(userId, type)
             observeFalls()
         } else {
             binding.noConnectionLayout.visibility = View.VISIBLE
             binding.fallsList.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
         }
     }
 
@@ -147,6 +149,8 @@ class FallsFragment : Fragment() {
         fallViewModel.observeFallsList().observe(viewLifecycleOwner) { falls ->
             falls?.let {
                 fallAdapter.setFalls(ArrayList(it))
+                binding.progressBar.visibility = View.GONE
+                binding.fallsList.visibility = View.VISIBLE
             }
         }
     }
