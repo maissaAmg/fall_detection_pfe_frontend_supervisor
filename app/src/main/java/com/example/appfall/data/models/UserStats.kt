@@ -1,6 +1,6 @@
 package com.example.appfall.data.models
 
-data class UserX(
+data class UserStats(
     val active: Int,
     val `false`: Int,
     val rescued: Int, //total pour le mois pour cet utilisateur
