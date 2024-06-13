@@ -1,7 +1,6 @@
 package com.example.appfall.views.fragments
 
 import android.content.Intent
-import com.example.appfall.viewModels.ContactsViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
 import com.example.appfall.adapters.ContactsAdapter
 import com.example.appfall.databinding.FragmentContactsBinding
+import com.example.appfall.services.NetworkHelper
+import com.example.appfall.viewModels.ContactsViewModel
 import com.example.appfall.views.activities.ParametersActivity
-
 
 class ContactsFragment : Fragment() {
 
     private lateinit var binding: FragmentContactsBinding
     private lateinit var contactsViewModel: ContactsViewModel
     private lateinit var contactsAdapter: ContactsAdapter
+    private lateinit var networkHelper: NetworkHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,7 @@ class ContactsFragment : Fragment() {
             val action = ContactsFragmentDirections.actionContactsFragmentToFallsFragment(contactId, isPaused)
             findNavController().navigate(action)
         }
+        networkHelper = NetworkHelper(requireContext())
     }
 
     override fun onCreateView(
@@ -47,38 +49,34 @@ class ContactsFragment : Fragment() {
             adapter = contactsAdapter
         }
 
-        contactsViewModel.getContacts()
-        observeContacts()
-        observeLoading()
-        observeEmptyList()
-
-        // Ajoutez le gestionnaire de clic pour l'icône de paramètres
         binding.icSettings.setOnClickListener {
             val intent = Intent(requireContext(), ParametersActivity::class.java)
             startActivity(intent)
+        }
+
+        if (networkHelper.isInternetAvailable()) {
+            binding.progressBar.visibility = View.VISIBLE
+            contactsViewModel.getContacts()
+            observeContacts()
+        } else {
+            binding.icNoWifi.visibility = View.VISIBLE
+            binding.noWifiText.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
+            binding.contactsList.visibility = View.GONE
         }
     }
 
     private fun observeContacts() {
         contactsViewModel.observeContactsList().observe(viewLifecycleOwner) { contacts ->
-            println("contacts ${contacts}")
-            contacts?.let {
-                contactsAdapter.setContacts(ArrayList(it))
+            binding.progressBar.visibility = View.GONE
+            if (contacts.isNullOrEmpty()) {
+                binding.noContactsText.visibility = View.VISIBLE
+                binding.contactsList.visibility = View.GONE
+            } else {
+                binding.noContactsText.visibility = View.GONE
+                binding.contactsList.visibility = View.VISIBLE
+                contactsAdapter.setContacts(ArrayList(contacts))
             }
         }
     }
-
-    private fun observeLoading() {
-        contactsViewModel.observeLoading().observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            binding.contactsList.visibility = if (isLoading) View.GONE else View.VISIBLE
-        }
-    }
-
-    private fun observeEmptyList() {
-        contactsViewModel.observeIsListEmpty().observe(viewLifecycleOwner) { isEmpty ->
-            binding.noContactsText.visibility = if (isEmpty) View.VISIBLE else View.GONE
-        }
-    }
 }
-
