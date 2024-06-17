@@ -68,7 +68,7 @@ class FallsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fallAdapter = FallAdapter(viewLifecycleOwner)
+        fallAdapter = FallAdapter(requireContext(), viewLifecycleOwner)
 
         binding.fallsList.apply {
             layoutManager = LinearLayoutManager(requireContext())

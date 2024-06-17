@@ -95,35 +95,29 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:layout_marginTop="0dp">
 
                     <TextView
-                        android:id="@+id/fallPlace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lieu:"
                         android:fontFamily="@font/myfont"
                         android:textColor="@color/black"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/mapView"
-                        android:layout_marginEnd="8dp"/>
+                        android:textSize="14sp"
+                        android:layout_marginEnd="4dp" />
 
-                    <com.mapbox.maps.MapView
-                        android:id="@+id/mapView"
-                        android:layout_width="0dp"
-                        android:layout_height="150dp"
-                        android:background="@drawable/rectangle_border"
-                        android:layout_margin="4dp"
-                        app:layout_constraintStart_toEndOf="@+id/fallPlace"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintWidth_percent="0.8" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/mapIcon"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/localisation_icon"
+                        android:layout_marginStart="18dp"/>
+                </LinearLayout>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
