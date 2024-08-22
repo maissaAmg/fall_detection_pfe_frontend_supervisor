@@ -9,6 +9,8 @@ import com.example.appfall.data.models.FallResponse
 import com.example.appfall.data.models.LoginResponse
 import com.example.appfall.data.models.MonthYear
 import com.example.appfall.data.models.PausedResponse
+import com.example.appfall.data.models.TopicSubscription
+import com.example.appfall.data.models.TopicSubscriptionResponse
 import com.example.appfall.data.models.UpdateSupervisorEmailRequest
 import com.example.appfall.data.models.UpdateSupervisorPasswordRequest
 import com.example.appfall.data.models.UpdateSupervisorNameRequest
@@ -75,4 +77,8 @@ interface FallAPI {
                    @Path("contactId") contactId: String,
                    @Body request: isPausedRequest): Call<PausedResponse>
 
+    @POST("notifications/subscribeToTopic")
+    fun subscribeToTopic(
+        @Body request: TopicSubscription,
+    ): Call<TopicSubscriptionResponse>
 }

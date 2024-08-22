@@ -24,9 +24,13 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.example.appfall.R
+import com.example.appfall.data.models.TopicSubscription
+import com.example.appfall.viewModels.NotificationsViewModel
 import com.example.appfall.viewModels.UserViewModel
 import com.example.appfall.views.activities.ParametersActivity
 import com.example.appfall.websockets.WebSocketManager
+import com.google.firebase.messaging.FirebaseMessaging
+import okhttp3.OkHttpClient
 
 class QRScannerFragment : Fragment() {
     private lateinit var codeScanner: CodeScanner
@@ -34,10 +38,14 @@ class QRScannerFragment : Fragment() {
     private lateinit var successIcon: ImageView
     private lateinit var failureIcon: ImageView
     private lateinit var statusText: TextView
+    private val client = OkHttpClient()
     private var token: String? = null
     private var phone: String? = null
     private var name: String? = null
     private val viewModel: UserViewModel by viewModels()
+    private val notificationsViewModel: NotificationsViewModel by viewModels()
+    private lateinit var fcmToken: String
+    private lateinit var fcmTopic: String
 
     private val requestCameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -53,7 +61,6 @@ class QRScannerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_qr_scanner, container, false)
-        // Initialiser les vues pour l'animation de chargement et les icônes
         loadingAnimation = view.findViewById(R.id.loadingAnimation)
         successIcon = view.findViewById(R.id.successIcon)
         failureIcon = view.findViewById(R.id.failureIcon)
@@ -71,37 +78,46 @@ class QRScannerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Code for testing ****************************
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val fcmToken = task.result
+                Log.d("FCM Token", "Token: $fcmToken")
+                subscribeToTopic("test")
+                subscribeToTopic("news")
+                sendSubscriptionRequest(fcmToken, "test1")
+            } else {
+                Log.e("FCM Token", "Failed to retrieve token: ${task.exception?.message}")
+            }
+        }
+        //Code for testing ****************************
+
         viewModel.getLocalUser()
-        // Observer les données de l'utilisateur local
         viewModel.localUser.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 phone = user.phone
                 token = user.token
                 name = user.name
                 Log.d("QRScannerFragment", "User data loaded: phone=$phone, token=$token, name=$name")
+
             } else {
                 Log.e("QRScannerFragment", "User data is null")
             }
         }
 
         WebSocketManager.connectWebSocket()
-
         checkCameraPermission()
     }
 
     private fun checkCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
-                // Permission already granted
                 setupScanner()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                // Show an explanation to the user why we need the permission
-                //Toast.makeText(requireContext(), "Camera permission is needed to scan QR codes", Toast.LENGTH_LONG).show()
                 requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
             else -> {
-                // Request the permission
                 requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
@@ -120,17 +136,24 @@ class QRScannerFragment : Fragment() {
 
         codeScanner.decodeCallback = DecodeCallback {
             activity.runOnUiThread {
-                // Hide the scanner view
                 scannerView.visibility = View.INVISIBLE
-
-                // Afficher l'animation de chargement
                 loadingAnimation.visibility = View.VISIBLE
 
                 if (token != null && name != null) {
                     Log.d("QRScannerFragment", "Sending WebSocket message with token=$token, name=$name")
+                    Log.d("QRScannerFragmentTest", it.text)
                     WebSocketManager.sendMessage("connect:$token:$name:${it.text}")
+
+                    val (beforeDelimiter, afterDelimiter) = splitTextByDelimiter(it.text, ":")
+                    println("Before: $beforeDelimiter")
+                    println("After: $afterDelimiter")
+
+                    fcmTopic = beforeDelimiter
+
+                    Log.d("QRScannerFragment", "WebSocket message sent")
+
                 } else {
-                    Log.e("QRScannerFragment", "Cannot send WebSocket message: token or name is null")
+                    Log.e("QRScannerFragment", "Cannot send WebSocket message or API request: token or name is null")
                 }
             }
         }
@@ -142,28 +165,36 @@ class QRScannerFragment : Fragment() {
         }
 
         WebSocketManager.receivedMessage.observe(viewLifecycleOwner) { message ->
-            println("WebSocket View: $message")
-            // Masquer l'animation de chargement
+            Log.d("WebSocket Message", message)
             loadingAnimation.visibility = View.INVISIBLE
 
             val icon: ImageView
             if (message == "Connected successfully") {
-                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                Log.d("QRScannerFragment", "Connection successful")
                 successIcon.visibility = View.VISIBLE
                 icon = successIcon
                 statusText.text = "Liaison établie avec succès"
-                statusText.visibility = View.VISIBLE
-                Log.d("received message", message)
+
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        fcmToken = task.result
+                        Log.d("FCM Token", "Token: $fcmToken")
+                        //Using firebase built in method
+                        subscribeToTopic(fcmTopic)
+                        //Using our own method
+                        sendSubscriptionRequest(fcmToken, fcmTopic)
+                    } else {
+                        Log.e("FCM Token", "Failed to retrieve token: ${task.exception?.message}")
+                    }
+                }
             } else {
-                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                Log.d("QRScannerFragment", "Connection failed: $message")
                 failureIcon.visibility = View.VISIBLE
                 icon = failureIcon
                 statusText.text = "Échec de la connexion"
-                statusText.visibility = View.VISIBLE
-                Log.d("received message", message)
             }
+            statusText.visibility = View.VISIBLE
 
-            // Hide the icon and show the scanner view again after 3 seconds
             Handler().postDelayed({
                 icon.visibility = View.INVISIBLE
                 statusText.visibility = View.INVISIBLE
@@ -178,15 +209,45 @@ class QRScannerFragment : Fragment() {
     }
 
     private fun handlePermissionDenied() {
-        // Handle the case when the camera permission is denied
         val scannerView = view?.findViewById<CodeScannerView>(R.id.scanner_view)
         scannerView?.visibility = View.INVISIBLE
         Toast.makeText(requireContext(), "La permission de la caméra a été refusée. Le scan des codes QR est désactivée.", Toast.LENGTH_LONG).show()
     }
 
+    private fun subscribeToTopic(topic: String) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+            .addOnCompleteListener { task ->
+                val msg = if (task.isSuccessful) {
+                    "Subscribed to topic $topic"
+                } else {
+                    "Subscription to $topic failed"
+                }
+                Log.d("FCM Subscription", msg)
+            }
+    }
+
+    private fun unsubscribeFromTopic(topic: String) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+            .addOnCompleteListener { task ->
+                val msg = if (task.isSuccessful) {
+                    "Unsubscribed from topic $topic"
+                } else {
+                    "Unsubscription from $topic failed"
+                }
+                Log.d("FCM Unsubscription", msg)
+            }
+    }
+
+    private fun sendSubscriptionRequest(token: String, topic: String) {
+        val subscriptionRequest = TopicSubscription(token, topic)
+        notificationsViewModel.subscribeToTopic(subscriptionRequest)
+        notificationsViewModel.subscriptionResponse.observe(viewLifecycleOwner) { response ->
+            Log.d("FCM Subscription", "Response: $response")
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        // Réinitialiser les vues à chaque reprise
         resetViews()
         if (::codeScanner.isInitialized) {
             codeScanner.startPreview()
@@ -206,5 +267,14 @@ class QRScannerFragment : Fragment() {
             codeScanner.releaseResources()
         }
         super.onPause()
+    }
+
+    private fun splitTextByDelimiter(text: String, delimiter: String): Pair<String, String> {
+        val parts = text.split(delimiter, limit = 2)
+        return if (parts.size == 2) {
+            parts[0] to parts[1]
+        } else {
+            text to ""  // or handle as needed
+        }
     }
 }

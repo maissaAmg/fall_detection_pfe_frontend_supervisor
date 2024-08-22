@@ -24,6 +24,7 @@ import com.example.appfall.adapters.FallAdapter
 import com.example.appfall.databinding.FragmentFallsBinding
 import com.example.appfall.services.NetworkHelper
 import com.example.appfall.viewModels.FallsViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 
 class FallsFragment : Fragment() {
 
@@ -31,6 +32,7 @@ class FallsFragment : Fragment() {
     private lateinit var fallViewModel: FallsViewModel
     private lateinit var fallAdapter: FallAdapter
     private var userId: String = ""
+    private var userPhone: String = ""
     private var isPaused: Boolean = false
 
     private lateinit var errorDialog: AlertDialog
@@ -50,6 +52,7 @@ class FallsFragment : Fragment() {
 
         arguments?.let {
             userId = it.getString("userId", "")
+            userPhone = it.getString("userPhone", "")
             isPaused = it.getBoolean("isPaused", false)
         }
 
@@ -108,7 +111,9 @@ class FallsFragment : Fragment() {
         // Switch listener
         binding.switchPauseTracking.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != expectedSwitchState) {
+                // Update ViewModel
                 fallViewModel.pause(userId, !isChecked)
+
             }
         }
 
@@ -165,6 +170,12 @@ class FallsFragment : Fragment() {
                 Log.d("FallsFragment", "Message de pause: $it")
                 if (it.contains("successfully", true)) {
                     expectedSwitchState = !expectedSwitchState
+                    // Subscribe/Unsubscribe from Firebase topic
+                    if (expectedSwitchState) {
+                        subscribeToTopic(userPhone)
+                    } else {
+                        unsubscribeFromTopic(userPhone)
+                    }
                     binding.switchPauseTracking.setOnCheckedChangeListener(null)
                     binding.switchPauseTracking.isChecked = expectedSwitchState
                     binding.switchPauseTracking.setOnCheckedChangeListener { _, isChecked ->
@@ -193,6 +204,9 @@ class FallsFragment : Fragment() {
                 Log.d("FallsFragment", "Message de déconnexion: $it")
                 if (it == "Disconnected successfully") {
                     findNavController().navigate(R.id.action_fallsFragment_to_contactsFragment)
+                    unsubscribeFromTopic(userPhone)
+                } else {
+                    showErrorDialog("échec", "Erreur lors de la déconnexion")
                 }
             }
         }
@@ -232,7 +246,6 @@ class FallsFragment : Fragment() {
         dialog.show()
     }
 
-
     private fun updateStatusText(isChecked: Boolean) {
         if (isChecked) {
             binding.switchStatus.text = "Activé"
@@ -269,5 +282,26 @@ class FallsFragment : Fragment() {
 
         dialog.show()
     }
-}
 
+    private fun subscribeToTopic(topic: String) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("FallsFragment", "Successfully subscribed to topic: $topic")
+                } else {
+                    Log.e("FallsFragment", "Failed to subscribe to topic: $topic", task.exception)
+                }
+            }
+    }
+
+    private fun unsubscribeFromTopic(topic: String) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("FallsFragment", "Successfully unsubscribed from topic: $topic")
+                } else {
+                    Log.e("FallsFragment", "Failed to unsubscribe from topic: $topic", task.exception)
+                }
+            }
+    }
+}

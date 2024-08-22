@@ -26,8 +26,8 @@ class ContactsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactsViewModel = ViewModelProvider(this)[ContactsViewModel::class.java]
-        contactsAdapter = ContactsAdapter { contactId, isPaused ->
-            val action = ContactsFragmentDirections.actionContactsFragmentToFallsFragment(contactId, isPaused)
+        contactsAdapter = ContactsAdapter { contactId, contactPhone, isPaused ->
+            val action = ContactsFragmentDirections.actionContactsFragmentToFallsFragment(contactId,  isPaused, contactPhone)
             findNavController().navigate(action)
         }
         networkHelper = NetworkHelper(requireContext())

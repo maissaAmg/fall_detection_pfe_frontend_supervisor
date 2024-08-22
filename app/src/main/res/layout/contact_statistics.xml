@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- LinearLayout to hold the name and numbers horizontally -->
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- LinearLayout for User Name -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- User Name TextView -->
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/myfont"
+                    android:text="bouch"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:layout_marginEnd="8dp" />
+
+            </LinearLayout>
+
+            <!-- LinearLayout for statistics -->
+            <LinearLayout
+                android:id="@+id/linearLayout_stats"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/rescued_falls"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Traitées : 3"
+                    android:fontFamily="@font/myfont"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="24dp"
+                    android:textColor="@color/deadly_depth" />
+
+                <TextView
+                    android:id="@+id/false_falls"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fausses : 1"
+                    android:fontFamily="@font/myfont"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/hot_jazz" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

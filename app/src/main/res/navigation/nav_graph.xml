@@ -56,5 +56,8 @@
         <argument
             android:name="isPaused"
             app:argType="boolean" />
+        <argument
+            android:name="userPhone"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -2,218 +2,162 @@ package com.example.appfall.views.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
-import com.example.appfall.data.models.Day
+import com.example.appfall.adapters.ContactStatisticsAdapter
+import com.example.appfall.data.models.DailyFallsResponse
+import com.example.appfall.data.models.UserStats
+import com.example.appfall.databinding.FragmentProfilBinding
 import com.example.appfall.viewModels.FallsViewModel
+import com.example.appfall.views.BarChartView
 import com.example.appfall.views.activities.ParametersActivity
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.BarData
 import java.util.Calendar
 
 class ProfilFragment : Fragment() {
-    /*private lateinit var fallsViewModel: FallsViewModel
-    private lateinit var progressBar: ProgressBar
-    private lateinit var barChart: BarChart
-    private lateinit var monthSpinner: Spinner
-    private lateinit var yearSpinner: Spinner
+
+    private lateinit var binding: FragmentProfilBinding
+    private lateinit var contactStatisticsAdapter: ContactStatisticsAdapter
+    private val fallsViewModel: FallsViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_profil, container, false)
-        progressBar = view.findViewById(R.id.progressBar)
-        barChart = view.findViewById(R.id.barChart)
-        monthSpinner = view.findViewById(R.id.monthSpinner)
-        yearSpinner = view.findViewById(R.id.yearSpinner)
+    ): View {
+        binding = FragmentProfilBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val settingsIcon: ImageView = view.findViewById(R.id.ic_settings)
-        settingsIcon.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        setupSpinners()
+        setupObservers()
+
+        binding.icSettings.setOnClickListener {
             val intent = Intent(requireContext(), ParametersActivity::class.java)
             startActivity(intent)
         }
+    }
 
-        // Initialize month spinner with month names or numbers
+    private fun setupRecyclerView() {
+        contactStatisticsAdapter = ContactStatisticsAdapter(emptyList())
+        binding.usersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.usersRecyclerView.adapter = contactStatisticsAdapter
+    }
+
+    private fun setupSpinners() {
         val months = resources.getStringArray(R.array.months)
         val monthAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        monthSpinner.adapter = monthAdapter
+        binding.monthSpinner.adapter = monthAdapter
 
-        // Initialize year spinner with years (you can populate it dynamically)
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val years = arrayOf((currentYear - 1).toString(), currentYear.toString(), (currentYear + 1).toString())
         val yearAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        yearSpinner.adapter = yearAdapter
+        binding.yearSpinner.adapter = yearAdapter
 
-        // Set initial selection to current month and year
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
-        monthSpinner.setSelection(currentMonth)
+        binding.monthSpinner.setSelection(Calendar.getInstance().get(Calendar.MONTH))
+        binding.yearSpinner.setSelection(years.indexOf(currentYear.toString()))
 
-        val currentYearIndex = years.indexOf(currentYear.toString())
-        yearSpinner.setSelection(currentYearIndex)
-
-        // Set up listener for month selection
-        monthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.monthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // When month selected, update chart data
-
-                    fetchDataAndUpdateChart()
-
+                generateAndDisplayChartData()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        // Set up listener for year selection
-        yearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.yearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // When year selected, update chart data
-                if (view != null) {
-                    fetchDataAndUpdateChart()
-                }
+                generateAndDisplayChartData()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-
-        // Initialize FallsViewModel and observe data
-        fallsViewModel = ViewModelProvider(this).get(FallsViewModel::class.java)
-        fetchDataAndUpdateChart()
-
-        return view
     }
 
-
-    private fun fetchDataAndUpdateChart() {
-        val selectedMonth = monthSpinner.selectedItemPosition
-        val selectedYear = yearSpinner.selectedItem.toString().toInt()
-        println("Selected year $selectedYear")
-        println("Selected month $selectedMonth")
-
-        fallsViewModel.getDailyFalls(selectedMonth + 1, selectedYear)
-        observeDailyFalls()
-
-        monthSpinner.visibility = View.VISIBLE
-        yearSpinner.visibility = View.VISIBLE
-    }
-
-
-    private fun observeDailyFalls() {
-        fallsViewModel.observeDailyFalls().observe(viewLifecycleOwner) { falls ->
-            falls?.let {
-                setupBarChart(falls.data)
-                progressBar.visibility = View.GONE
-                barChart.visibility = View.VISIBLE
+    private fun setupObservers() {
+        fallsViewModel.dailyFallsData.observe(viewLifecycleOwner) { response ->
+            // Hide the progress bar and show the updated data
+            binding.fullPageProgressLayout.visibility = View.GONE
+            response?.let {
+                updateBarChart(it)
+                updateStatisticsUI(it)
+                updateRecyclerView(it)
             }
         }
     }
 
-    private fun setupBarChart(falls: List<Day>) {
-        val rescuedEntries = ArrayList<BarEntry>()
-        val activeEntries = ArrayList<BarEntry>()
-        val falseEntries = ArrayList<BarEntry>()
+    private fun updateBarChart(response: DailyFallsResponse) {
+        val details = response.data.firstOrNull()?.details ?: emptyList()
 
-        // Assuming the weeks are from 1 to 5 for a month
-        val weeksInMonth = 5
+        // Extract data for each week from the response
+        val barData = details
+            .filter { it.week in 1..5 } // Assuming weeks are between 1 and 52
+            .sortedBy { it.week } // Ensure data is sorted by week
+            .map { detail ->
+                listOf(
+                    detail.rescued.toFloat(),
+                    //detail.active.toFloat(),
+                    detail.`false`.toFloat()
+                )
+            }
 
-        // Initialize entries with 0 for all weeks
-        for (week in 1..weeksInMonth) {
-            rescuedEntries.add(BarEntry(week.toFloat(), 0f))
-            activeEntries.add(BarEntry(week.toFloat(), 0f))
-            falseEntries.add(BarEntry(week.toFloat(), 0f))
+        // Update the BarChartView with the data
+        binding.barChartView.post {
+            binding.barChartView.setBarData(barData)
+            binding.barChartView.visibility = View.VISIBLE
         }
+    }
 
-        // Populate entries with actual data
-        for (dayData in falls) {
-            val week = dayData.week
-            // Check if week is not null and has the expected format
-            if (week.isNotEmpty() && week.length >= 8) {
-                // Extract the total week number from the "week" field
-                val totalWeekNumber = week.substring(6, 8).toInt() // "2024-W22" -> 22
-                // Calculate the week within the month using Euclidean division
-                val weekWithinMonth = (totalWeekNumber - 1) % weeksInMonth + 1
+    private fun generateAndDisplayChartData() {
+        val selectedMonth = binding.monthSpinner.selectedItemPosition + 1 // January is 1
+        val selectedYear = binding.yearSpinner.selectedItem.toString().toInt()
 
-                for (count in dayData.counts) {
-                    when (count.status) {
-                        "rescued" -> rescuedEntries[weekWithinMonth - 1].y = count.count.toFloat()
-                        "active" -> activeEntries[weekWithinMonth - 1].y = count.count.toFloat()
-                        "false" -> falseEntries[weekWithinMonth - 1].y = count.count.toFloat()
-                    }
-                }
-            } else {
-                // Handle the case where the week field is null, empty, or doesn't have the expected format
+        // Show the progress bar while waiting for data
+        binding.fullPageProgressLayout.visibility = View.VISIBLE
+        binding.barChartView.visibility = View.GONE
+
+        fallsViewModel.getDailyFalls(selectedMonth, selectedYear)
+    }
+
+    private fun updateStatisticsUI(response: DailyFallsResponse) {
+        val firstDetail = response.data.firstOrNull()?.details?.firstOrNull()
+
+        binding.totalFalls.text = "Total: ${response.data.firstOrNull()?.total ?: 0}"
+        binding.rescuedFalls.text = "Traitées: ${firstDetail?.rescued ?: 0}"
+        binding.falseFalls.text = "Fausses: ${firstDetail?.`false` ?: 0}"
+        // Ensure the active falls value is correctly handled if needed
+        // binding.activeFalls.text = "Actives: ${firstDetail?.active ?: 0}"
+
+        // Hide the progress bar and show the updated data
+        binding.fullPageProgressLayout.visibility = View.GONE
+        binding.barChartView.visibility = View.VISIBLE
+    }
+
+    private fun updateRecyclerView(response: DailyFallsResponse) {
+        val contactStatisticsList = response.data.flatMap { data ->
+            data.users.map { detail ->
+                UserStats(
+                    active = detail.active,
+                    `false` = detail.`false`,
+                    rescued = detail.rescued,
+                    user = detail.user
+                )
             }
         }
 
-
-        val colorRescued = resources.getColor(R.color.custom_red, null)
-        val colorActive = resources.getColor(R.color.deep_blue, null)
-        val colorFalse = resources.getColor(R.color.light_yellow, null)
-
-        val barDataSetRescued = BarDataSet(rescuedEntries, "Rescued")
-        barDataSetRescued.color = colorRescued
-
-        val barDataSetActive = BarDataSet(activeEntries, "Active")
-        barDataSetActive.color = colorActive
-
-        val barDataSetFalse = BarDataSet(falseEntries, "False")
-        barDataSetFalse.color = colorFalse
-
-        val data = BarData(barDataSetRescued, barDataSetActive, barDataSetFalse)
-        barChart.data = data
-
-        barChart.description.isEnabled = false
-        barChart.setDrawGridBackground(false)
-
-        val xAxis: XAxis = barChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(true) // Enable X-axis gridlines
-        xAxis.granularity = 1f
-        xAxis.textSize = 12f // Set the X-axis label text size
-
-        val leftAxis: YAxis = barChart.axisLeft
-        leftAxis.setDrawGridLines(true) // Enable left Y-axis gridlines
-        leftAxis.textSize = 12f // Set the left Y-axis label text size
-        val rightAxis: YAxis = barChart.axisRight
-        rightAxis.setDrawGridLines(true) // Enable right Y-axis gridlines
-        rightAxis.textSize = 12f // Set the right Y-axis label text size
-
-        val legend = barChart.legend
-        legend.textSize = 14f // Set the legend text size
-
-        barDataSetRescued.valueTextSize = 10f // Set the value text size for rescued data set
-        barDataSetActive.valueTextSize = 10f // Set the value text size for active data set
-        barDataSetFalse.valueTextSize = 10f // Set the value text size for false data set
-
-        // Disable zooming and panning
-        barChart.setScaleEnabled(false)
-        barChart.setPinchZoom(false)
-        barChart.isDoubleTapToZoomEnabled = false
-
-        // Add animations
-        barChart.animateXY(1000, 1000)
-
-        barChart.invalidate()
-    }*/
+        Log.d("ContactStatisticsAdapter", "UserStats: $contactStatisticsList")
+        contactStatisticsAdapter.updateData(contactStatisticsList)
+    }
 }

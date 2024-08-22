@@ -10,7 +10,6 @@ import com.example.appfall.data.models.DailyFallsRequest
 import com.example.appfall.data.models.DailyFallsResponse
 import com.example.appfall.data.models.Fall
 import com.example.appfall.data.models.FallFilter
-import com.example.appfall.data.models.MonthYear
 import com.example.appfall.data.models.isPausedRequest
 import com.example.appfall.data.repositories.AppDatabase
 import com.example.appfall.data.repositories.dataStorage.UserDao
@@ -28,8 +27,6 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
 
     private val mutableFallsList: MutableLiveData<List<Fall>> = MutableLiveData()
-    //private var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NTczMTY0ODViOTFiZjY3ZGZjNjM5ZiIsImlhdCI6MTcxNjk5MDMwOH0.4HxGAUghy9zX-LzXG7ukzY3ugx9Pld_kDGz342E0_Uc"
-
     private val _addErrorStatus: MutableLiveData<String> = MutableLiveData()
     val addErrorStatus: LiveData<String> = _addErrorStatus
 
@@ -39,7 +36,8 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
     private val _pauseStatus: MutableLiveData<String> = MutableLiveData()
     val pauseStatus: LiveData<String> = _pauseStatus
 
-    private val mutableDailyFalls: MutableLiveData<DailyFallsResponse> = MutableLiveData()
+    private val _dailyFallsData: MutableLiveData<DailyFallsResponse?> = MutableLiveData()
+    val dailyFallsData: MutableLiveData<DailyFallsResponse?> = _dailyFallsData
 
     private lateinit var token: String
 
@@ -51,6 +49,7 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
     fun getFalls(userId: String, filter: String) {
         viewModelScope.launch {
             try {
@@ -91,7 +90,8 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
             RetrofitInstance.fallApi.getDailyFalls("Bearer $token", DailyFallsRequest(month, year)).enqueue(object : Callback<DailyFallsResponse> {
                 override fun onResponse(call: Call<DailyFallsResponse>, response: Response<DailyFallsResponse>) {
                     if (response.isSuccessful) {
-                        mutableDailyFalls.value = response.body()
+                        val dailyFallsResponse = response.body()
+                        _dailyFallsData.value = dailyFallsResponse
                     } else {
                         handleErrorResponse(response.errorBody())
                         Log.e("FallViewModel", "Failed to retrieve daily falls: ${response.message()}")
@@ -137,7 +137,7 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    Log.d("Pause","${contactId} + ${token} + ${isPaused.toString()}")
+                    Log.d("Pause", "${contactId} + ${token} + ${isPaused.toString()}")
                     RetrofitInstance.fallApi.pause("Bearer $token", contactId, isPausedRequest((isPaused))).execute()
                 }
                 if (response.isSuccessful) {
@@ -164,8 +164,8 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
         return mutableFallsList
     }
 
-    fun observeDailyFalls(): LiveData<DailyFallsResponse> {
-        return mutableDailyFalls
+    fun observeDailyFalls(): MutableLiveData<DailyFallsResponse?> {
+        return _dailyFallsData
     }
 
     fun observeDisconnectStatus(): LiveData<String> {
