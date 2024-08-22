@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1073454457520",
+    "project_id": "test-pfe-b1a92",
+    "storage_bucket": "test-pfe-b1a92.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073454457520:android:6e3c6a4b7f71d2828cd175",
+        "android_client_info": {
+          "package_name": "com.example.appfall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdddFSBSFTBjwiCuKptRGFm8J6UCv17Wo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
