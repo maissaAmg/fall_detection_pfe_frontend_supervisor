@@ -10,12 +10,17 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appfall.R
 import com.example.appfall.adapters.ContactStatisticsAdapter
+import com.example.appfall.adapters.ContactsAdapter
 import com.example.appfall.data.models.DailyFallsResponse
 import com.example.appfall.data.models.UserStats
 import com.example.appfall.databinding.FragmentProfilBinding
+import com.example.appfall.services.NetworkHelper
+import com.example.appfall.viewModels.ContactsViewModel
 import com.example.appfall.viewModels.FallsViewModel
 import com.example.appfall.views.BarChartView
 import com.example.appfall.views.activities.ParametersActivity
@@ -26,6 +31,12 @@ class ProfilFragment : Fragment() {
     private lateinit var binding: FragmentProfilBinding
     private lateinit var contactStatisticsAdapter: ContactStatisticsAdapter
     private val fallsViewModel: FallsViewModel by viewModels()
+    private lateinit var networkHelper: NetworkHelper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        networkHelper = NetworkHelper(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +56,23 @@ class ProfilFragment : Fragment() {
         binding.icSettings.setOnClickListener {
             val intent = Intent(requireContext(), ParametersActivity::class.java)
             startActivity(intent)
+        }
+
+        if (networkHelper.isInternetAvailable()) {
+            // Show the progress bar while fetching data
+            binding.fullPageProgressLayout.visibility = View.VISIBLE
+            binding.noNetworkLayout.visibility = View.GONE
+            binding.contentLayout.visibility = View.GONE
+            binding.noDataTextViewLayout.visibility = View.GONE
+
+            // Fetch data for the selected month and year
+            generateAndDisplayChartData()
+        } else {
+            // Handle no internet connection
+            binding.fullPageProgressLayout.visibility = View.GONE
+            binding.noNetworkLayout.visibility = View.VISIBLE
+            binding.contentLayout.visibility = View.GONE
+            binding.noDataTextViewLayout.visibility = View.GONE
         }
     }
 
@@ -88,12 +116,28 @@ class ProfilFragment : Fragment() {
 
     private fun setupObservers() {
         fallsViewModel.dailyFallsData.observe(viewLifecycleOwner) { response ->
-            // Hide the progress bar and show the updated data
             binding.fullPageProgressLayout.visibility = View.GONE
-            response?.let {
-                updateBarChart(it)
-                updateStatisticsUI(it)
-                updateRecyclerView(it)
+
+            if (response == null) {
+                binding.noDataTextViewLayout.visibility = View.GONE
+                binding.contentLayout.visibility = View.GONE
+                binding.errorTextViewLayout.visibility = View.VISIBLE
+            }
+            else if (response.data.isNotEmpty() &&
+                response.data.any { it.details.isNotEmpty() || it.users.isNotEmpty() }) {
+
+                // Data available
+                binding.noDataTextViewLayout.visibility = View.GONE
+                binding.contentLayout.visibility = View.VISIBLE
+
+                updateBarChart(response)
+                updateStatisticsUI(response)
+                updateRecyclerView(response)
+
+            } else {
+                // No data available
+                binding.contentLayout.visibility = View.GONE
+                binding.noDataTextViewLayout.visibility = View.VISIBLE
             }
         }
     }
@@ -103,12 +147,11 @@ class ProfilFragment : Fragment() {
 
         // Extract data for each week from the response
         val barData = details
-            .filter { it.week in 1..5 } // Assuming weeks are between 1 and 52
+            .filter { it.week in 1..4 } // Assuming weeks are between 1 and 52
             .sortedBy { it.week } // Ensure data is sorted by week
             .map { detail ->
                 listOf(
                     detail.rescued.toFloat(),
-                    //detail.active.toFloat(),
                     detail.`false`.toFloat()
                 )
             }
@@ -124,10 +167,6 @@ class ProfilFragment : Fragment() {
         val selectedMonth = binding.monthSpinner.selectedItemPosition + 1 // January is 1
         val selectedYear = binding.yearSpinner.selectedItem.toString().toInt()
 
-        // Show the progress bar while waiting for data
-        binding.fullPageProgressLayout.visibility = View.VISIBLE
-        binding.barChartView.visibility = View.GONE
-
         fallsViewModel.getDailyFalls(selectedMonth, selectedYear)
     }
 
@@ -137,12 +176,9 @@ class ProfilFragment : Fragment() {
         binding.totalFalls.text = "Total: ${response.data.firstOrNull()?.total ?: 0}"
         binding.rescuedFalls.text = "Traitées: ${firstDetail?.rescued ?: 0}"
         binding.falseFalls.text = "Fausses: ${firstDetail?.`false` ?: 0}"
-        // Ensure the active falls value is correctly handled if needed
-        // binding.activeFalls.text = "Actives: ${firstDetail?.active ?: 0}"
 
-        // Hide the progress bar and show the updated data
         binding.fullPageProgressLayout.visibility = View.GONE
-        binding.barChartView.visibility = View.VISIBLE
+        binding.contentLayout.visibility = View.VISIBLE
     }
 
     private fun updateRecyclerView(response: DailyFallsResponse) {

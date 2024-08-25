@@ -1,39 +1,20 @@
 package com.example.appfall.adapters
 
-import android.app.Activity
-import android.app.Dialog
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appfall.R
 import com.example.appfall.data.models.Fall
 import com.example.appfall.databinding.FallBinding
 import com.example.appfall.views.dialogs.MapDialogFragment
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
-import com.mapbox.maps.extension.style.layers.addLayer
-import com.mapbox.maps.extension.style.layers.generated.symbolLayer
-import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
-import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
-import com.mapbox.maps.extension.style.sources.addSource
-import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
-
-
 
 class FallAdapter(
     private val context: Context,
@@ -75,7 +56,7 @@ class FallAdapter(
                 )
             }
 
-            binding.mapIcon.setOnClickListener {
+            binding.locationDetails.setOnClickListener {
                 val fall = binding.fall ?: return@setOnClickListener
                 val fragmentManager = (context as AppCompatActivity).supportFragmentManager
                 val mapDialogFragment = MapDialogFragment(fall.place.latitude, fall.place.longitude)
@@ -107,6 +88,13 @@ class FallAdapter(
                 else -> R.color.white // Define a default color in your colors.xml
             }
             binding.cardView.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, colorRes))
+
+            // Set location details text with underline
+            val locationText = "${fall.place.latitude}, ${fall.place.longitude}"
+            val spannable = SpannableString(locationText)
+            spannable.setSpan(UnderlineSpan(), 0, spannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            binding.locationDetails.text = spannable
+            binding.locationDetails.setTextColor(ContextCompat.getColor(context, R.color.blue))
         }
 
         private fun extractDate(dateTime: String): String {
@@ -114,7 +102,23 @@ class FallAdapter(
         }
 
         private fun extractTime(dateTime: String): String {
-            return dateTime.substringAfter('T').substringBefore('Z')
+            // Extract the time part after 'T' and before 'Z'
+            val timePart = dateTime.substringAfter('T').substringBefore('Z')
+
+            // Split the time part by ':' to get hours and minutes
+            val timeComponents = timePart.split(':')
+
+            // Check if there are at least two components (hours and minutes)
+            if (timeComponents.size >= 2) {
+                val hours = timeComponents[0]
+                val minutes = timeComponents[1]
+
+                // Format and return only hours and minutes
+                return "$hours:$minutes"
+            }
+
+            // Return the original timePart if it doesn't meet the expected format
+            return timePart
         }
     }
 }

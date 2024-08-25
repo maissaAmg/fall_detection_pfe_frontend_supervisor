@@ -3,8 +3,9 @@ package com.example.appfall.views.fragments
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,8 +27,10 @@ import com.example.appfall.databinding.FragmentFallsBinding
 import com.example.appfall.services.NetworkHelper
 import com.example.appfall.viewModels.FallsViewModel
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class FallsFragment : Fragment() {
+class FallsFragment : Fragment(), CoroutineScope {
 
     private lateinit var binding: FragmentFallsBinding
     private lateinit var fallViewModel: FallsViewModel
@@ -38,6 +42,11 @@ class FallsFragment : Fragment() {
     private lateinit var errorDialog: AlertDialog
 
     private var expectedSwitchState: Boolean = false
+    private val retryCount = 3
+    private val retryDelay = 2000L // Delay in milliseconds
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,12 +82,17 @@ class FallsFragment : Fragment() {
 
         fallAdapter = FallAdapter(requireContext(), viewLifecycleOwner)
 
+        binding.backButton.setOnClickListener {
+            findNavController().navigate(R.id.action_fallsFragment_to_contactsFragment)
+        }
+
         binding.fallsList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = fallAdapter
         }
 
-        loadFalls("all")
+        // Initialize error message visibility
+        binding.errorTextViewLayout.visibility = View.GONE
 
         binding.btnAll.setOnClickListener {
             loadFalls("all")
@@ -128,12 +142,41 @@ class FallsFragment : Fragment() {
             binding.noConnectionLayout.visibility = View.GONE
             binding.fallsList.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE
-            fallViewModel.getFalls(userId, type)
-            observeFalls()
+            binding.errorTextViewLayout.visibility = View.GONE
+
+            // Start retry mechanism
+            retryLoadFalls(type, retryCount)
         } else {
             binding.noConnectionLayout.visibility = View.VISIBLE
             binding.fallsList.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
+            binding.errorTextViewLayout.visibility = View.GONE
+        }
+    }
+
+    private fun retryLoadFalls(type: String, retriesLeft: Int) {
+        val job = launch {
+            val success = withContext(Dispatchers.IO) {
+                try {
+                    fallViewModel.getFalls(userId, type)
+                    true
+                } catch (e: Exception) {
+                    Log.e("FallsFragment", "Error loading falls", e)
+                    false
+                }
+            }
+
+            if (success) {
+                observeFalls()
+            } else if (retriesLeft > 1) {
+                // Retry after delay
+                delay(retryDelay)
+                retryLoadFalls(type, retriesLeft - 1)
+            } else {
+                // Final failure
+                binding.progressBar.visibility = View.GONE
+                binding.errorTextViewLayout.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -153,6 +196,7 @@ class FallsFragment : Fragment() {
     private fun observeFalls() {
         fallViewModel.observeFallsList().observe(viewLifecycleOwner) { falls ->
             binding.progressBar.visibility = View.GONE
+            binding.errorTextViewLayout.visibility = View.GONE
             if (falls.isNullOrEmpty()) {
                 binding.emptyListMessage.visibility = View.VISIBLE
                 binding.fallsList.visibility = View.GONE
@@ -303,5 +347,10 @@ class FallsFragment : Fragment() {
                     Log.e("FallsFragment", "Failed to unsubscribe from topic: $topic", task.exception)
                 }
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancel() // Cancel coroutines when fragment is destroyed
     }
 }

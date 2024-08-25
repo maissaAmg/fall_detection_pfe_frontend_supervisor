@@ -1,243 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".views.fragments.FallsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/linear_header_card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="10dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Buttons at the top -->
-        <LinearLayout
-            android:id="@+id/buttons_layout"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:id="@+id/linear_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp">
 
-            <Button
-                android:id="@+id/btn_all"
+
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_back_arrow" />
+
+            <TextView
+                android:id="@+id/text_header"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button_filter"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/back_button"
+                android:layout_toRightOf="@id/back_button"
                 android:fontFamily="@font/myfont"
-                android:padding="0dp"
-                android:text="Tous"
-                android:textAllCaps="false"
-                android:textSize="12sp"/>
+                android:paddingBottom="10dp"
+                android:text="Chutes"
+                android:textColor="@color/custom_red"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/btn_active"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button_filter_empty"
-                android:fontFamily="@font/myfont"
-                android:padding="0dp"
-                android:text="Active"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="12sp"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/btn_rescued"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button_filter_empty"
-                android:fontFamily="@font/myfont"
-                android:padding="0dp"
-                android:text="Traitée"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="12sp"/>
+    <!-- Buttons at the top -->
+    <LinearLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/linear_header_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-            <Button
-                android:id="@+id/btn_false"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button_filter_empty"
-                android:fontFamily="@font/myfont"
-                android:padding="0dp"
-                android:text="Faux"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="12sp"/>
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_all"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_button_filter"
+            android:fontFamily="@font/myfont"
+            android:padding="0dp"
+            android:text="Tous"
+            android:textAllCaps="false"
+            android:textSize="12sp"/>
 
-        <!-- RecyclerView for falls -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/falls_list"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="18dp"
-            app:layout_constraintTop_toBottomOf="@id/buttons_layout"
-            app:layout_constraintBottom_toTopOf="@id/pause_tracking_layout"
+        <Button
+            android:id="@+id/btn_active"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button_filter_empty"
+            android:fontFamily="@font/myfont"
+            android:padding="0dp"
+            android:text="Active"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/btn_rescued"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button_filter_empty"
+            android:fontFamily="@font/myfont"
+            android:padding="0dp"
+            android:text="Traitée"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/btn_false"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button_filter_empty"
+            android:fontFamily="@font/myfont"
+            android:padding="0dp"
+            android:text="Faux"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <!-- RecyclerView for falls -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/falls_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toBottomOf="@id/buttons_layout"
+        app:layout_constraintBottom_toTopOf="@id/pause_tracking_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- TextView for empty list message -->
+    <TextView
+        android:id="@+id/empty_list_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="La liste est vide pour le moment"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:textSize="18sp"
+        android:fontFamily="@font/myfont"
+        android:textColor="#D3D3D3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- ProgressBar for loading -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/custom_red"/>
+
+    <!-- Layout for no connection message -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/no_connection_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/buttons_layout"
+        app:layout_constraintBottom_toTopOf="@id/pause_tracking_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/no_connection_icon"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/ic_no_wifi"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- TextView for empty list message -->
         <TextView
-            android:id="@+id/empty_list_message"
+            android:id="@+id/no_connection_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="La liste est vide pour le moment"
-            android:visibility="gone"
-            android:layout_gravity="center"
-            android:textSize="18sp"
+            android:text="Pas de connexion Internet"
+            android:textSize="16sp"
             android:fontFamily="@font/myfont"
             android:textColor="#D3D3D3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- ProgressBar for loading -->
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="24dp"
-            android:indeterminate="true"
-            android:indeterminateTintMode="src_atop"
-            android:indeterminateTint="@color/custom_red"/>
-
-        <!-- Layout for no connection message -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/no_connection_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/buttons_layout"
-            app:layout_constraintBottom_toTopOf="@id/pause_tracking_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:id="@+id/no_connection_icon"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:src="@drawable/ic_no_wifi"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <TextView
-                android:id="@+id/no_connection_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pas de connexion Internet"
-                android:textSize="16sp"
-                android:fontFamily="@font/myfont"
-                android:textColor="#D3D3D3"
-                app:layout_constraintTop_toBottomOf="@id/no_connection_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Layout for Pause Tracking Switch -->
-        <LinearLayout
-            android:id="@+id/pause_tracking_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="6dp"
-            app:layout_constraintBottom_toTopOf="@id/btn_delete"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- TextView and Switch layout -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:orientation="vertical"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="4dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Etat du suivi"
-                    android:fontFamily="@font/myfont"
-                    android:textSize="20sp"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/switch_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Activé"
-                    android:fontFamily="@font/myfont"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="32dp"
-                android:background="@android:color/darker_gray"/>
-
-            <Switch
-                android:id="@+id/switch_pause_tracking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:thumbTint="@drawable/custom_switch_thumb"
-                android:trackTint="@drawable/custom_switch_track"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="8dp"
-                android:scaleX="1.25"
-                android:scaleY="1.25"/>
-        </LinearLayout>
-
-        <!-- Delete button at the bottom -->
-        <Button
-            android:id="@+id/btn_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/custom_button_background"
-            android:fontFamily="@font/myfont"
-            android:text="Supprimer la liaison"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_connection_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+
+    <!-- Layout for Pause Tracking Switch -->
+    <LinearLayout
+        android:id="@+id/pause_tracking_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- TextView and Switch layout -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etat du suivi"
+                android:fontFamily="@font/myfont"
+                android:textSize="20sp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/switch_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activé"
+                android:fontFamily="@font/myfont"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="32dp"
+            android:background="@android:color/darker_gray"/>
+
+        <Switch
+            android:id="@+id/switch_pause_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumbTint="@drawable/custom_switch_thumb"
+            android:trackTint="@drawable/custom_switch_track"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
+            android:scaleX="1.25"
+            android:scaleY="1.25"/>
+    </LinearLayout>
+
+    <!-- Delete button at the bottom -->
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/custom_button_background"
+        android:fontFamily="@font/myfont"
+        android:text="Supprimer la liaison"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <FrameLayout
+        android:id="@+id/errorTextViewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone">
+
+        <!-- No Data TextView -->
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Une erreur s'est produite lors du chargement des données"
+            android:textSize="18sp"
+            android:textColor="#BF3131"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:fontFamily="@font/myfont"
+            android:layout_marginTop="16dp" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,7 @@
                 android:fontFamily="@font/myfont"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/fallDate"
                 app:layout_constraintHorizontal_bias="0" />
 
@@ -77,48 +78,50 @@
                     android:orientation="horizontal"
                     android:padding="8dp">
 
+                    <!-- Heure TextView -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Heure:"
                         android:fontFamily="@font/myfont"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:layout_marginEnd="8dp" />
 
+                    <!-- Heure Value TextView -->
                     <TextView
                         android:id="@+id/fallTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/myfont"
                         android:textColor="@color/black"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                        android:textSize="12sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:layout_marginTop="0dp">
-
+                    <!-- Lieu TextView -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lieu:"
                         android:fontFamily="@font/myfont"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:layout_marginEnd="4dp" />
+                        android:textSize="12sp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp"/>
 
-                    <ImageView
-                        android:id="@+id/mapIcon"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/localisation_icon"
-                        android:layout_marginStart="18dp"/>
+                    <!-- Longitude and Latitude TextView -->
+                    <TextView
+                        android:id="@+id/locationDetails"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/myfont"
+                        android:textColor="@color/deep_blue"
+                        android:textSize="12sp"
+                        android:text="Latitude, Longitude"
+                        android:clickable="true"
+                        android:focusable="true" /> <!-- Underline text -->
                 </LinearLayout>
             </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

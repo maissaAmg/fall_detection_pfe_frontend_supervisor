@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white">
 
     <item android:title="Contacts"
         android:icon="@drawable/personnes"
+        android:textColor="@android:color/black"
         android:id="@+id/contactsFragment"/>
 
     <item android:title="Scan"
         android:icon="@drawable/qrscan"
+        android:textColor="@android:color/black"
         android:id="@+id/QRScannerFragment"/>
 
     <item android:title="Stats"
         android:icon="@drawable/ic_stats"
+        android:textColor="@android:color/black"
         android:id="@+id/profilFragment"/>
 </menu>

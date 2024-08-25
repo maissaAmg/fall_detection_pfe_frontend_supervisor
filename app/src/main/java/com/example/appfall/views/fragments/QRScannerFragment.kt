@@ -79,17 +79,17 @@ class QRScannerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //Code for testing ****************************
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val fcmToken = task.result
-                Log.d("FCM Token", "Token: $fcmToken")
-                subscribeToTopic("test")
-                subscribeToTopic("news")
-                sendSubscriptionRequest(fcmToken, "test1")
-            } else {
-                Log.e("FCM Token", "Failed to retrieve token: ${task.exception?.message}")
-            }
-        }
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                val fcmToken = task.result
+//                Log.d("FCM Token", "Token: $fcmToken")
+//                subscribeToTopic("test")
+//                subscribeToTopic("news")
+//                sendSubscriptionRequest(fcmToken, "test1")
+//            } else {
+//                Log.e("FCM Token", "Failed to retrieve token: ${task.exception?.message}")
+//            }
+//        }
         //Code for testing ****************************
 
         viewModel.getLocalUser()

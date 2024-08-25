@@ -1,5 +1,23 @@
 <resources>
-    <style name="CustomEditText" parent="Widget.AppCompat.EditText">
-        <item name="colorControlActivated">@color/custom_red</item>
+
+    <style name="WhiteButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@android:color/white</item> <!-- White Background -->
+        <item name="android:textColor">@android:color/white</item> <!-- White Text -->
+        <item name="android:padding">10dp</item> <!-- Padding -->
+        <item name="android:textSize">16sp</item> <!-- Text Size -->
+        <item name="android:fontFamily">@font/myfont</item> <!-- Font -->
+        <!-- You can add more attributes here if needed -->
     </style>
+
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/custom_button_empty_background</item> <!-- Background with Stroke -->
+        <item name="android:textColor">#BF3131</item> <!-- Red Text -->
+        <item name="android:padding">10dp</item> <!-- Padding -->
+        <item name="android:textSize">16sp</item> <!-- Text Size -->
+        <item name="android:fontFamily">@font/myfont</item> <!-- Font -->
+    </style>
+
+
+
+
 </resources>

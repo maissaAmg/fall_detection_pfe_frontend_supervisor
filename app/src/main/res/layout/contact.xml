@@ -12,7 +12,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <ImageView
             android:id="@+id/contact_image"
@@ -36,10 +39,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="John Doe"
+                android:textColor="@color/black"
                 android:fontFamily="@font/myfont"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/contact_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paused"
+                android:textColor="@color/black"
+                android:fontFamily="@font/myfont"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageView

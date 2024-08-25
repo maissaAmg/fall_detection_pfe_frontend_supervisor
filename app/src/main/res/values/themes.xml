@@ -3,7 +3,7 @@
     <style name="Theme.AppFall" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/hot_jazz</item>
-        <item name="colorPrimaryVariant">@color/deadly_depth</item>
+        <item name="colorPrimaryVariant">@color/hot_jazz</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

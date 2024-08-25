@@ -67,7 +67,7 @@ class BarChartView @JvmOverloads constructor(
 
         // Adjust bar width and height parameters
         val availableWidth = width - 2 * padding
-        val numberOfWeeks = 5 // Total number of weeks for labels
+        val numberOfWeeks = 4 // Total number of weeks for labels
         val barWidth = (availableWidth - (numberOfWeeks - 1) * barSpacing) / numberOfWeeks
         val maxBarHeight = height * 0.5f // Maximum height for bars
         val maxDataValue = barData.flatten().maxOrNull() ?: 1f

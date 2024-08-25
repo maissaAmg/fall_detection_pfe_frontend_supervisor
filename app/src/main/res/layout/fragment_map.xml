@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".views.fragments.MapFragment">
 
     <!-- Top bar avec effet de CardView -->
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
+            android:background="@color/white"
             android:paddingEnd="20dp">
 
             <TextView

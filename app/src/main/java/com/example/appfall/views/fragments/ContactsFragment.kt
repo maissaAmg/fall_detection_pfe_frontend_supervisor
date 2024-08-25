@@ -2,6 +2,7 @@ package com.example.appfall.views.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,12 +70,24 @@ class ContactsFragment : Fragment() {
     private fun observeContacts() {
         contactsViewModel.observeContactsList().observe(viewLifecycleOwner) { contacts ->
             binding.progressBar.visibility = View.GONE
-            if (contacts.isNullOrEmpty()) {
+            if (contacts == null) {
+                // Handle the case when contacts is null
+                Log.d("ContactsFragment", "Contacts are null")
+                binding.noContactsText.visibility = View.GONE
+                binding.contactsList.visibility = View.GONE
+                binding.errorTextViewLayout.visibility = View.VISIBLE
+            } else if (contacts.isEmpty()) {
+                // Handle the case when contacts is empty
+                Log.d("ContactsFragment", "Contacts are empty")
+                Log.d("ContactsFragment", "Contacts: $contacts")
                 binding.noContactsText.visibility = View.VISIBLE
                 binding.contactsList.visibility = View.GONE
+                binding.errorTextViewLayout.visibility = View.GONE
             } else {
+                // Handle the case when contacts is not null and not empty
                 binding.noContactsText.visibility = View.GONE
                 binding.contactsList.visibility = View.VISIBLE
+                binding.errorTextViewLayout.visibility = View.GONE
                 contactsAdapter.setContacts(ArrayList(contacts))
             }
         }

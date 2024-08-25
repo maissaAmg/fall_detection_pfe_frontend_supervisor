@@ -26,7 +26,7 @@ import retrofit2.Response
 class FallsViewModel(application: Application) : AndroidViewModel(application) {
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
 
-    private val mutableFallsList: MutableLiveData<List<Fall>> = MutableLiveData()
+    private val mutableFallsList: MutableLiveData<List<Fall>?> = MutableLiveData()
     private val _addErrorStatus: MutableLiveData<String> = MutableLiveData()
     val addErrorStatus: LiveData<String> = _addErrorStatus
 
@@ -65,6 +65,7 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
                         Log.d("FallViewModel", "Response body is null")
                     }
                 } else {
+                    mutableFallsList.postValue(null)
                     Log.d("FallViewModel", "Response not successful: ${response.code()}")
                 }
             } catch (e: Exception) {
@@ -93,6 +94,8 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
                         val dailyFallsResponse = response.body()
                         _dailyFallsData.value = dailyFallsResponse
                     } else {
+
+                        _dailyFallsData.value = null
                         handleErrorResponse(response.errorBody())
                         Log.e("FallViewModel", "Failed to retrieve daily falls: ${response.message()}")
                     }
@@ -160,7 +163,7 @@ class FallsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun observeFallsList(): LiveData<List<Fall>> {
+    fun observeFallsList(): MutableLiveData<List<Fall>?> {
         return mutableFallsList
     }
 

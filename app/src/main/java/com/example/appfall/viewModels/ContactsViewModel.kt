@@ -20,7 +20,7 @@ import retrofit2.Response
 
 class ContactsViewModel(application: Application) : AndroidViewModel(application) {
     private val userDao: UserDao = AppDatabase.getInstance(application).userDao()
-    private val mutableContactsList: MutableLiveData<List<ConnectedSupervisor>> = MutableLiveData()
+    private val mutableContactsList: MutableLiveData<List<ConnectedSupervisor>?> = MutableLiveData()
     private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     private val isListEmpty: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -40,9 +40,11 @@ class ContactsViewModel(application: Application) : AndroidViewModel(application
         isLoading.postValue(true)
         RetrofitInstance.fallApi.getContacts("Bearer $token").enqueue(object : Callback<ConnectedSupervisorsResponse> {
             override fun onResponse(call: Call<ConnectedSupervisorsResponse>, response: Response<ConnectedSupervisorsResponse>) {
-                val contacts = response.body()?.connectedUsers ?: emptyList()
+                val contacts = response.body()?.connectedUsers ?: null
                 mutableContactsList.postValue(contacts)
-                isListEmpty.postValue(contacts.isEmpty())
+                if (contacts != null) {
+                    isListEmpty.postValue(contacts.isEmpty())
+                }
                 isLoading.postValue(false)
             }
 
@@ -55,7 +57,7 @@ class ContactsViewModel(application: Application) : AndroidViewModel(application
         })
     }
 
-    fun observeContactsList(): LiveData<List<ConnectedSupervisor>> {
+    fun observeContactsList(): MutableLiveData<List<ConnectedSupervisor>?> {
         return mutableContactsList
     }
 

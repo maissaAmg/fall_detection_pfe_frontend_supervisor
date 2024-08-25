@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".views.fragments.QRScannerFragment">
 
     <!-- Top bar avec effet de CardView -->
@@ -25,6 +26,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingEnd="20dp"
+            android:background="@color/white"
             android:paddingStart="20dp">
 
             <TextView
@@ -34,7 +36,7 @@
                 android:paddingBottom="10dp"
                 android:text="Scan"
                 android:textColor="#BF3131"
-                android:textSize="28sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/myfont"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,8 +47,8 @@
 
             <ImageView
                 android:id="@+id/ic_settings"
-                android:layout_width="46dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_settings"
 
                 app:layout_constraintEnd_toEndOf="parent"
@@ -137,13 +139,15 @@
     <!-- Texte d'instruction en bas -->
     <TextView
         android:id="@+id/instructionText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="38dp"
         android:text="Veuillez scanner le code QR pour établir une connexion"
         android:textColor="#000000"
-        android:textSize="23sp"
+        android:textSize="18dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:textStyle="bold"
         android:fontFamily="@font/myfont"
         app:layout_constraintTop_toBottomOf="@id/scannerContainer"

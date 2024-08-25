@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".views.activities.MainActivity">
 
     <fragment
@@ -20,7 +21,9 @@
     
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/btm_nav"
+        android:background="@color/white"
         android:layout_width="match_parent"
+        android:textColor="@android:color/black"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

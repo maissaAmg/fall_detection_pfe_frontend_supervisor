@@ -45,6 +45,11 @@ class ContactsAdapter ( private val onContactClick: (String, String, Boolean) ->
                     contact.inDanger -> R.color.light_red
                     else -> R.color.white
                 }
+                contactStatus.text = when {
+                    contact.isPaused -> "Suivi en pause"
+                    contact.inDanger -> "Suivi activé"
+                    else -> "En ligne"
+                }
 
                 println("isPaused ${contact.isPaused}")
                 println("inDanger ${contact.inDanger}")

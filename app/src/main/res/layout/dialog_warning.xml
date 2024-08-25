@@ -33,7 +33,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginTop="28dp"
@@ -42,24 +42,26 @@
         <Button
             android:id="@+id/btnConfirm"
             android:layout_width="130dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Confirmer"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/hot_jazz"
+            android:textColor="@color/white"
             android:fontFamily="@font/myfont"
             android:background="@drawable/custom_button_background"
-            android:textColor="@color/white"
-            android:padding="10dp"
             android:layout_gravity="center" />
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="130dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Annuler"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/hot_jazz"
             android:fontFamily="@font/myfont"
-            android:background="@drawable/custom_button_background"
-            android:textColor="@color/white"
-            android:padding="10dp"
             android:layout_gravity="center"
+            android:textAllCaps="false"
+            android:background="@drawable/custom_button_empty_background"
             android:layout_marginStart="16dp" />
 
     </LinearLayout>
