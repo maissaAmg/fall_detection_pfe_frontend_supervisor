@@ -38,7 +38,6 @@ class QRScannerFragment : Fragment() {
     private lateinit var successIcon: ImageView
     private lateinit var failureIcon: ImageView
     private lateinit var statusText: TextView
-    private val client = OkHttpClient()
     private var token: String? = null
     private var phone: String? = null
     private var name: String? = null
