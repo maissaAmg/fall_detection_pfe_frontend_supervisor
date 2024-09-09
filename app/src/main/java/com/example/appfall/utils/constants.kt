@@ -4,4 +4,4 @@ import android.content.Context
 import java.io.File
 
 val dataFile = "dataFile"
-const val url = "https://f527-197-204-153-12.ngrok-free.app/"
+const val url = " https://2966-197-204-55-111.ngrok-free.app/"
